@@ -36,9 +36,9 @@
             <a href="{{ route('organizer.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('organizer.dashboard') ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-slate-600 hover:bg-slate-50' }}">
                 <span>📊</span><span>Dashboard</span>
             </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>🏆</span><span>Tournaments</span>
-            </a>
+            <a href="{{ route('tournaments.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
+    <span>🏆</span><span>Tournaments</span>
+</a>
             <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
                 <span>🧩</span><span>Brackets</span>
             </a>
