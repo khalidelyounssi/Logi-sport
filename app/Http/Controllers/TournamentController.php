@@ -2,64 +2,102 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTournamentRequest;
+use App\Http\Requests\UpdateTournamentRequest;
+use App\Models\Sport;
 use App\Models\Tournament;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class TournamentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): View
     {
-        //
+        abort_if(auth()->user()->role !== 'organizer', 403);
+
+        $tournaments = Tournament::with('sport')
+            ->where('organizer_id', auth()->id())
+            ->latest()
+            ->paginate(10);
+
+        return view('tournaments.index', compact('tournaments'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
-        //
+        abort_if(auth()->user()->role !== 'organizer', 403);
+
+        $sports = Sport::orderBy('name')->get();
+
+        return view('tournaments.create', compact('sports'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreTournamentRequest $request): RedirectResponse
     {
-        //
+        Tournament::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'type' => $request->type,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'status' => $request->status,
+            'sport_id' => $request->sport_id,
+            'organizer_id' => auth()->id(),
+        ]);
+
+        return redirect()
+            ->route('tournaments.index')
+            ->with('success', 'Tournament created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Tournament $tournament)
+    public function show(Tournament $tournament): View
     {
-        //
+        abort_if(auth()->user()->role !== 'organizer', 403);
+        abort_if($tournament->organizer_id !== auth()->id(), 403);
+
+        $tournament->load('sport', 'participants', 'matches');
+
+        return view('tournaments.show', compact('tournament'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Tournament $tournament)
+    public function edit(Tournament $tournament): View
     {
-        //
+        abort_if(auth()->user()->role !== 'organizer', 403);
+        abort_if($tournament->organizer_id !== auth()->id(), 403);
+
+        $sports = Sport::orderBy('name')->get();
+
+        return view('tournaments.edit', compact('tournament', 'sports'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Tournament $tournament)
+    public function update(UpdateTournamentRequest $request, Tournament $tournament): RedirectResponse
     {
-        //
+        abort_if($tournament->organizer_id !== auth()->id(), 403);
+
+        $tournament->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'type' => $request->type,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'status' => $request->status,
+            'sport_id' => $request->sport_id,
+        ]);
+
+        return redirect()
+            ->route('tournaments.index')
+            ->with('success', 'Tournament updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Tournament $tournament)
+    public function destroy(Tournament $tournament): RedirectResponse
     {
-        //
+        abort_if(auth()->user()->role !== 'organizer', 403);
+        abort_if($tournament->organizer_id !== auth()->id(), 403);
+
+        $tournament->delete();
+
+        return redirect()
+            ->route('tournaments.index')
+            ->with('success', 'Tournament deleted successfully.');
     }
 }
