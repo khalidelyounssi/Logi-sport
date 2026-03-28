@@ -2,64 +2,64 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tournament;
 use App\Models\Participant;
-use Illuminate\Http\Request;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\StoreParticipantRequest;
+use App\Http\Requests\UpdateParticipantRequest;
 
 class ParticipantController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Tournament $tournament): View
     {
-        //
+        abort_if(auth()->user()->role !== 'organizer', 403);
+
+        $participants = $tournament->participants()->latest()->get();
+
+        return view('participants.index', compact('tournament', 'participants'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(Tournament $tournament): View
     {
-        //
+        return view('participants.create', compact('tournament'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreParticipantRequest $request, Tournament $tournament): RedirectResponse
     {
-        //
+        $tournament->participants()->create([
+            'name' => $request->name,
+            'type' => $request->type,
+        ]);
+
+        return redirect()
+            ->route('tournaments.participants.index', $tournament)
+            ->with('success', 'Participant created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Participant $participant)
+    public function edit(Tournament $tournament, Participant $participant): View
     {
-        //
+        return view('participants.edit', compact('tournament', 'participant'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Participant $participant)
+    public function update(UpdateParticipantRequest $request, Tournament $tournament, Participant $participant): RedirectResponse
     {
-        //
+        $participant->update([
+            'name' => $request->name,
+            'type' => $request->type,
+        ]);
+
+        return redirect()
+            ->route('tournaments.participants.index', $tournament)
+            ->with('success', 'Participant updated successfully.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Participant $participant)
+    public function destroy(Tournament $tournament, Participant $participant): RedirectResponse
     {
-        //
-    }
+        $participant->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Participant $participant)
-    {
-        //
+        return redirect()
+            ->route('tournaments.participants.index', $tournament)
+            ->with('success', 'Participant deleted.');
     }
 }
