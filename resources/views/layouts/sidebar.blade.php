@@ -36,10 +36,18 @@
 
             <!-- ORGANIZER -->
             @if($role === 'organizer')
-                <a href="{{ route('tournaments.index') }}" class="menu-link {{ request()->routeIs('tournaments.*') ? 'active' : '' }}">
-                    🏆 Tournaments
-                </a>
-            @endif
+    <a href="{{ route('organizer.dashboard') }}" class="menu-link {{ request()->routeIs('organizer.dashboard') ? 'active' : '' }}">
+        📊 Dashboard
+    </a>
+
+    <a href="{{ route('tournaments.index') }}" class="menu-link {{ request()->routeIs('tournaments.*') ? 'active' : '' }}">
+        🏆 Tournaments
+    </a>
+
+    <a href="{{ route('tournaments.standings.index', 1) }}" class="menu-link">
+        📈 Standings
+    </a>
+@endif
 
 
             <!-- REFEREE -->

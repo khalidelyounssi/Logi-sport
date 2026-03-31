@@ -41,6 +41,9 @@ class RefereeMatchController extends Controller
             'score_b' => $request->score_b,
             'status' => $request->status,
         ]);
+        if ($request->status === 'finished') {
+    app(StandingController::class)->recalculate($match->tournament);
+}
 
         return redirect()
             ->route('referee.matches.index')
