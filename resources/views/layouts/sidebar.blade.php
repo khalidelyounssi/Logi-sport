@@ -2,95 +2,97 @@
     $role = auth()->user()->role;
 @endphp
 
-<aside class="hidden lg:flex lg:flex-col w-72 min-h-screen bg-white border-r border-slate-200 px-6 py-8">
-    <div class="flex items-center gap-3 mb-10">
-        <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 21h8m-4-4v4m-7-8V7a2 2 0 012-2h2l1-2h4l1 2h2a2 2 0 012 2v6a4 4 0 01-4 4H12a4 4 0 01-4-4z"/>
-            </svg>
+<aside class="w-64 h-screen bg-white border-r border-slate-200 flex flex-col justify-between">
+
+    <!-- TOP -->
+    <div>
+        <!-- Logo -->
+        <div class="px-6 py-6 border-b border-slate-100">
+            <h1 class="text-xl font-black text-blue-600">⚽ Logi-Sport</h1>
         </div>
 
-        <div>
-            <h1 class="text-3xl font-black italic text-blue-600 leading-none">Logi-Sport</h1>
-            <p class="text-xs tracking-[0.2em] text-slate-400 uppercase">Tournament Pro</p>
-        </div>
+        <!-- Menu -->
+        <nav class="p-4 space-y-2">
+
+            <!-- DASHBOARD -->
+            @if($role === 'admin')
+                <a href="{{ route('admin.dashboard') }}" class="menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    📊 Dashboard
+                </a>
+            @elseif($role === 'organizer')
+                <a href="{{ route('organizer.dashboard') }}" class="menu-link {{ request()->routeIs('organizer.dashboard') ? 'active' : '' }}">
+                    📊 Dashboard
+                </a>
+            @elseif($role === 'referee')
+                <a href="{{ route('referee.dashboard') }}" class="menu-link {{ request()->routeIs('referee.dashboard') ? 'active' : '' }}">
+                    📊 Dashboard
+                </a>
+            @elseif($role === 'player')
+                <a href="{{ route('player.dashboard') }}" class="menu-link {{ request()->routeIs('player.dashboard') ? 'active' : '' }}">
+                    📊 Dashboard
+                </a>
+            @endif
+
+
+            <!-- ORGANIZER -->
+            @if($role === 'organizer')
+                <a href="{{ route('tournaments.index') }}" class="menu-link {{ request()->routeIs('tournaments.*') ? 'active' : '' }}">
+                    🏆 Tournaments
+                </a>
+            @endif
+
+
+            <!-- REFEREE -->
+            @if($role === 'referee')
+                <a href="{{ route('referee.matches.index') }}" class="menu-link {{ request()->routeIs('referee.matches.*') ? 'active' : '' }}">
+                    ⚽ My Matches
+                </a>
+            @endif
+
+
+            <!-- PLAYER -->
+            @if($role === 'player')
+                <a href="#" class="menu-link">
+                    🎮 My Tournaments
+                </a>
+            @endif
+
+
+            <!-- ADMIN -->
+            @if($role === 'admin')
+                <a href="#" class="menu-link">
+                    👥 Manage Users
+                </a>
+
+                <a href="#" class="menu-link">
+                    📈 Statistics
+                </a>
+            @endif
+
+        </nav>
     </div>
 
-    <nav class="space-y-3">
-        @if($role === 'admin')
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('admin.dashboard') ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-slate-600 hover:bg-slate-50' }}">
-                <span>📊</span><span>Dashboard</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>👥</span><span>Users</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>🏅</span><span>Sports</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>📈</span><span>Statistics</span>
-            </a>
-        @endif
 
-        @if($role === 'organizer')
-            <a href="{{ route('organizer.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('organizer.dashboard') ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-slate-600 hover:bg-slate-50' }}">
-                <span>📊</span><span>Dashboard</span>
-            </a>
-            <a href="{{ route('tournaments.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-    <span>🏆</span><span>Tournaments</span>
-</a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>🧩</span><span>Brackets</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>👥</span><span>Teams</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>💰</span><span>Financials</span>
-            </a>
-        @endif
+    <!-- BOTTOM -->
+    <div class="p-4 border-t border-slate-100">
 
-        @if($role === 'referee')
-            <a href="{{ route('referee.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('referee.dashboard') ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-slate-600 hover:bg-slate-50' }}">
-                <span>📊</span><span>Dashboard</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>⚽</span><span>My Matches</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>📝</span><span>Scores</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>📅</span><span>Schedule</span>
-            </a>
-        @endif
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600">
+                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+            </div>
 
-        @if($role === 'player')
-            <a href="{{ route('player.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('player.dashboard') ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-slate-600 hover:bg-slate-50' }}">
-                <span>📊</span><span>Dashboard</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>🏆</span><span>Tournaments</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>📈</span><span>My Stats</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-                <span>🎯</span><span>My Matches</span>
-            </a>
-        @endif
-    </nav>
-
-    <div class="mt-auto space-y-3 pt-10">
-        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-slate-50">
-            <span>❓</span><span>Support</span>
-        </a>
+            <div>
+                <p class="text-sm font-semibold">{{ auth()->user()->name }}</p>
+                <p class="text-xs text-slate-400 capitalize">{{ $role }}</p>
+            </div>
+        </div>
 
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-red-50 hover:text-red-500 transition">
-                <span>↩</span><span>Logout</span>
+            <button class="w-full text-left text-red-600 text-sm font-semibold hover:underline">
+                🚪 Logout
             </button>
         </form>
+
     </div>
 </aside>

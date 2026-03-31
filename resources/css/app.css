@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.menu-link {
+    display: block;
+    padding: 12px 16px;
+    border-radius: 16px;
+    color: #475569;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.menu-link:hover {
+    background: #f1f5f9;
+}
+
+.menu-link.active {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+}

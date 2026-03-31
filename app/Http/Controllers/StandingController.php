@@ -3,63 +3,85 @@
 namespace App\Http\Controllers;
 
 use App\Models\Standing;
-use Illuminate\Http\Request;
+use App\Models\Tournament;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class StandingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Tournament $tournament): View
     {
-        //
+        abort_if(!in_array(auth()->user()->role, ['organizer', 'player', 'referee', 'admin']), 403);
+
+        $standings = $tournament->standings()
+            ->with('participant')
+            ->orderByDesc('points')
+            ->orderByDesc('won')
+            ->orderBy('lost')
+            ->get();
+
+        return view('standings.index', compact('tournament', 'standings'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function recalculate(Tournament $tournament): RedirectResponse
     {
-        //
-    }
+        abort_if(!in_array(auth()->user()->role, ['organizer', 'admin']), 403);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        // 1) نمسحو standings القديمة
+        $tournament->standings()->delete();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Standing $standing)
-    {
-        //
-    }
+        // 2) نخلقو standing فارغة لكل participant
+        foreach ($tournament->participants as $participant) {
+            $tournament->standings()->create([
+                'participant_id' => $participant->id,
+                'points' => 0,
+                'played' => 0,
+                'won' => 0,
+                'lost' => 0,
+                'draw' => 0,
+            ]);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Standing $standing)
-    {
-        //
-    }
+        // 3) نجيبو غير الماتشات المسالين
+        $matches = $tournament->matches()->where('status', 'finished')->get();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Standing $standing)
-    {
-        //
-    }
+        foreach ($matches as $match) {
+            $standingA = Standing::where('tournament_id', $tournament->id)
+                ->where('participant_id', $match->participant_a_id)
+                ->first();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Standing $standing)
-    {
-        //
+            $standingB = Standing::where('tournament_id', $tournament->id)
+                ->where('participant_id', $match->participant_b_id)
+                ->first();
+
+            if (!$standingA || !$standingB) {
+                continue;
+            }
+
+            $standingA->increment('played');
+            $standingB->increment('played');
+
+            if ($match->score_a > $match->score_b) {
+                $standingA->increment('won');
+                $standingA->increment('points', $tournament->sport->win_points);
+
+                $standingB->increment('lost');
+            } elseif ($match->score_a < $match->score_b) {
+                $standingB->increment('won');
+                $standingB->increment('points', $tournament->sport->win_points);
+
+                $standingA->increment('lost');
+            } else {
+                $standingA->increment('draw');
+                $standingB->increment('draw');
+
+                $standingA->increment('points', $tournament->sport->draw_points);
+                $standingB->increment('points', $tournament->sport->draw_points);
+            }
+        }
+
+        return redirect()
+            ->route('tournaments.standings.index', $tournament)
+            ->with('success', 'Standings recalculated successfully.');
     }
 }
