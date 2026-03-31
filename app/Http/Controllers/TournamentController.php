@@ -89,6 +89,33 @@ class TournamentController extends Controller
             ->with('success', 'Tournament updated successfully.');
     }
 
+    public function generateMatches($tournamentId)
+{
+    $tournament = Tournament::with('participants')->findOrFail($tournamentId);
+
+    abort_if(auth()->user()->role !== 'organizer', 403);
+
+    $participants = $tournament->participants;
+
+    $tournament->matches()->delete();
+
+    for ($i = 0; $i < count($participants); $i++) {
+        for ($j = $i + 1; $j < count($participants); $j++) {
+
+            \App\Models\MatchModel::create([
+                'tournament_id' => $tournament->id,
+                'participant_a_id' => $participants[$i]->id,
+                'participant_b_id' => $participants[$j]->id,
+                'status' => 'scheduled',
+            ]);
+        }
+    }
+
+    return redirect()
+        ->route('tournaments.matches.index', $tournament)
+        ->with('success', 'Matches generated successfully 🔥');
+}
+
     public function destroy(Tournament $tournament): RedirectResponse
     {
         abort_if(auth()->user()->role !== 'organizer', 403);

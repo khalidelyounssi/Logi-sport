@@ -53,6 +53,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/referee/matches/{match}/edit-score', [RefereeMatchController::class, 'edit'])->name('referee.matches.edit');
     Route::put('/referee/matches/{match}/update-score', [RefereeMatchController::class, 'update'])->name('referee.matches.update');
 
+    Route::post('/tournaments/{tournament}/generate-matches', [TournamentController::class, 'generateMatches'])
+    ->name('tournaments.generateMatches');
+
     Route::get('/tournaments/{tournament}/standings', [StandingController::class, 'index'])->name('tournaments.standings.index');
 Route::post('/tournaments/{tournament}/standings/recalculate', [StandingController::class, 'recalculate'])->name('tournaments.standings.recalculate');
 

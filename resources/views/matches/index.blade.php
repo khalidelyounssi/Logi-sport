@@ -19,6 +19,12 @@
         @endif
 
         <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+            <form action="{{ route('tournaments.generateMatches', $tournament) }}" method="POST" class="mb-4">
+    @csrf
+    <button class="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold">
+        ⚡ Generate Matches
+    </button>
+</form>
             <table class="w-full text-left">
                 <thead class="text-xs uppercase text-slate-400 tracking-[0.2em]">
                     <tr>

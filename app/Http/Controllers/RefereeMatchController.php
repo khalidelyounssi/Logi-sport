@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateRefereeMatchScoreRequest;
 use App\Models\MatchModel;
+use App\Services\StandingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -31,8 +32,11 @@ class RefereeMatchController extends Controller
         return view('referee.matches.edit', compact('match'));
     }
 
-    public function update(UpdateRefereeMatchScoreRequest $request, MatchModel $match): RedirectResponse
-    {
+    public function update(
+        UpdateRefereeMatchScoreRequest $request,
+        MatchModel $match,
+        StandingService $standingService
+    ): RedirectResponse {
         abort_if(auth()->user()->role !== 'referee', 403);
         abort_if($match->referee_id !== auth()->id(), 403);
 
@@ -41,9 +45,10 @@ class RefereeMatchController extends Controller
             'score_b' => $request->score_b,
             'status' => $request->status,
         ]);
-        if ($request->status === 'finished') {
-    app(StandingController::class)->recalculate($match->tournament);
-}
+
+        if ($match->status === 'finished') {
+            $standingService->recalculate($match->tournament);
+        }
 
         return redirect()
             ->route('referee.matches.index')
