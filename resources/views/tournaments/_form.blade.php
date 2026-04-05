@@ -1,38 +1,36 @@
 @csrf
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="grid grid-cols-1 gap-5 md:grid-cols-2">
     <div class="md:col-span-2">
-        <label class="block text-sm font-medium text-slate-700 mb-2">Title</label>
-        <input type="text" name="title" value="{{ old('title', $tournament->title ?? '') }}"
-            class="w-full rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500">
+        <label for="title" class="ui-label">Tournament Title</label>
+        <input id="title" type="text" name="title" value="{{ old('title', $tournament->title ?? '') }}" class="ui-input" placeholder="e.g. Summer Championship" required>
         @error('title')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            <p class="ui-field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div class="md:col-span-2">
-        <label class="block text-sm font-medium text-slate-700 mb-2">Description</label>
-        <textarea name="description" rows="4"
-            class="w-full rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500">{{ old('description', $tournament->description ?? '') }}</textarea>
+        <label for="description" class="ui-label">Description</label>
+        <textarea id="description" name="description" rows="4" class="ui-textarea" placeholder="Describe your tournament">{{ old('description', $tournament->description ?? '') }}</textarea>
         @error('description')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            <p class="ui-field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div>
-        <label class="block text-sm font-medium text-slate-700 mb-2">Type</label>
-        <select name="type" class="w-full rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500">
+        <label for="type" class="ui-label">Tournament Type</label>
+        <select id="type" name="type" class="ui-select" required>
             <option value="round_robin" {{ old('type', $tournament->type ?? '') === 'round_robin' ? 'selected' : '' }}>Round Robin</option>
             <option value="elimination" {{ old('type', $tournament->type ?? '') === 'elimination' ? 'selected' : '' }}>Elimination</option>
         </select>
         @error('type')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            <p class="ui-field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div>
-        <label class="block text-sm font-medium text-slate-700 mb-2">Sport</label>
-        <select name="sport_id" class="w-full rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500">
+        <label for="sport_id" class="ui-label">Sport</label>
+        <select id="sport_id" name="sport_id" class="ui-select" required>
             @foreach($sports as $sport)
                 <option value="{{ $sport->id }}" {{ old('sport_id', $tournament->sport_id ?? '') == $sport->id ? 'selected' : '' }}>
                     {{ $sport->name }}
@@ -40,48 +38,46 @@
             @endforeach
         </select>
         @error('sport_id')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            <p class="ui-field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div>
-        <label class="block text-sm font-medium text-slate-700 mb-2">Start Date</label>
-        <input type="date" name="start_date" value="{{ old('start_date', isset($tournament) && $tournament->start_date ? $tournament->start_date->format('Y-m-d') : '') }}"
-            class="w-full rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500">
+        <label for="start_date" class="ui-label">Start Date</label>
+        <input id="start_date" type="date" name="start_date" value="{{ old('start_date', isset($tournament) && $tournament->start_date ? $tournament->start_date->format('Y-m-d') : '') }}" class="ui-input" required>
         @error('start_date')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            <p class="ui-field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div>
-        <label class="block text-sm font-medium text-slate-700 mb-2">End Date</label>
-        <input type="date" name="end_date" value="{{ old('end_date', isset($tournament) && $tournament->end_date ? $tournament->end_date->format('Y-m-d') : '') }}"
-            class="w-full rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500">
+        <label for="end_date" class="ui-label">End Date</label>
+        <input id="end_date" type="date" name="end_date" value="{{ old('end_date', isset($tournament) && $tournament->end_date ? $tournament->end_date->format('Y-m-d') : '') }}" class="ui-input">
         @error('end_date')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            <p class="ui-field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div>
-        <label class="block text-sm font-medium text-slate-700 mb-2">Status</label>
-        <select name="status" class="w-full rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500">
+        <label for="status" class="ui-label">Status</label>
+        <select id="status" name="status" class="ui-select" required>
             <option value="draft" {{ old('status', $tournament->status ?? '') === 'draft' ? 'selected' : '' }}>Draft</option>
             <option value="upcoming" {{ old('status', $tournament->status ?? '') === 'upcoming' ? 'selected' : '' }}>Upcoming</option>
             <option value="live" {{ old('status', $tournament->status ?? '') === 'live' ? 'selected' : '' }}>Live</option>
             <option value="completed" {{ old('status', $tournament->status ?? '') === 'completed' ? 'selected' : '' }}>Completed</option>
         </select>
         @error('status')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            <p class="ui-field-error">{{ $message }}</p>
         @enderror
     </div>
 </div>
 
-<div class="mt-8 flex items-center gap-4">
-    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-semibold">
+<div class="mt-8 flex flex-wrap items-center gap-3">
+    <x-ui.button type="submit" variant="primary" size="lg">
         {{ $buttonText }}
-    </button>
+    </x-ui.button>
 
-    <a href="{{ route('tournaments.index') }}" class="px-6 py-3 rounded-2xl border border-slate-300 text-slate-600">
+    <x-ui.button as="a" :href="route('tournaments.index')" variant="secondary" size="lg">
         Cancel
-    </a>
+    </x-ui.button>
 </div>

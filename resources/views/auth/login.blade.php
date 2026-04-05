@@ -1,41 +1,57 @@
 <x-guest-layout>
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+    <x-ui.card padding="p-8 sm:p-10">
+        <div class="mb-8 text-center">
+            <p class="text-xs uppercase tracking-[0.25em] text-slate-400">Logi-Sport</p>
+            <h1 class="mt-2 text-3xl font-black text-slate-900">Welcome Back</h1>
+            <p class="mt-2 text-sm text-slate-500">Sign in to manage tournaments and live match data.</p>
+        </div>
 
-        <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+        @if(session('status'))
+            <x-ui.alert variant="success" class="mb-5">
+                {{ session('status') }}
+            </x-ui.alert>
+        @endif
 
-        <form method="POST" action="{{ route('login') }}">
+        @if($errors->any())
+            <x-ui.alert variant="error" class="mb-5">
+                {{ $errors->first() }}
+            </x-ui.alert>
+        @endif
+
+        <form method="POST" action="{{ route('login') }}" class="space-y-5">
             @csrf
 
-            <!-- Email -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Email</label>
-                <input type="email" name="email" class="w-full rounded-xl border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+            <div>
+                <label for="email" class="ui-label">Email</label>
+                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" class="ui-input">
             </div>
 
-            <!-- Password -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Password</label>
-                <input type="password" name="password" class="w-full rounded-xl border-gray-300">
+            <div>
+                <label for="password" class="ui-label">Password</label>
+                <input id="password" type="password" name="password" required autocomplete="current-password" class="ui-input">
             </div>
 
-            <div class="flex justify-between items-center mb-4">
-                <label class="flex items-center gap-2 text-sm">
-                    <input type="checkbox" name="remember">
-                    Remember me
+            <div class="flex items-center justify-between gap-3">
+                <label class="inline-flex items-center gap-2 text-sm text-slate-600">
+                    <input type="checkbox" name="remember" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                    <span>Remember me</span>
                 </label>
 
-                <a href="#" class="text-sm text-blue-600">Forgot?</a>
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}" class="text-sm font-semibold text-blue-600 hover:text-blue-700">
+                        Forgot password?
+                    </a>
+                @endif
             </div>
 
-            <button class="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold">
-                Login
-            </button>
-
-            <p class="text-center text-sm mt-4">
-                No account?
-                <a href="{{ route('register') }}" class="text-blue-600">Register</a>
-            </p>
-
+            <x-ui.button type="submit" variant="primary" size="lg" class="w-full">
+                Sign In
+            </x-ui.button>
         </form>
-    </div>
+
+        <p class="mt-6 text-center text-sm text-slate-500">
+            New to Logi-Sport?
+            <a href="{{ route('register') }}" class="font-semibold text-blue-600 hover:text-blue-700">Create account</a>
+        </p>
+    </x-ui.card>
 </x-guest-layout>

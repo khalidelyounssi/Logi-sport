@@ -6,6 +6,8 @@ use App\Http\Requests\StoreTournamentRequest;
 use App\Http\Requests\UpdateTournamentRequest;
 use App\Models\Sport;
 use App\Models\Tournament;
+use App\Services\MatchGenerationService;
+use App\Services\StandingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -89,32 +91,26 @@ class TournamentController extends Controller
             ->with('success', 'Tournament updated successfully.');
     }
 
-    public function generateMatches($tournamentId)
-{
-    $tournament = Tournament::with('participants')->findOrFail($tournamentId);
+    public function generateMatches(
+        Tournament $tournament,
+        MatchGenerationService $matchGenerationService,
+        StandingService $standingService
+    ): RedirectResponse {
+        abort_if(auth()->user()->role !== 'organizer', 403);
+        abort_if($tournament->organizer_id !== auth()->id(), 403);
 
-    abort_if(auth()->user()->role !== 'organizer', 403);
+        $generatedCount = $matchGenerationService->generateRoundRobin(
+            $tournament,
+            replaceExisting: true,
+            autoAssignReferees: true
+        );
 
-    $participants = $tournament->participants;
+        $standingService->recalculate($tournament);
 
-    $tournament->matches()->delete();
-
-    for ($i = 0; $i < count($participants); $i++) {
-        for ($j = $i + 1; $j < count($participants); $j++) {
-
-            \App\Models\MatchModel::create([
-                'tournament_id' => $tournament->id,
-                'participant_a_id' => $participants[$i]->id,
-                'participant_b_id' => $participants[$j]->id,
-                'status' => 'scheduled',
-            ]);
-        }
+        return redirect()
+            ->route('tournaments.matches.index', $tournament)
+            ->with('success', "{$generatedCount} matches generated successfully.");
     }
-
-    return redirect()
-        ->route('tournaments.matches.index', $tournament)
-        ->with('success', 'Matches generated successfully 🔥');
-}
 
     public function destroy(Tournament $tournament): RedirectResponse
     {

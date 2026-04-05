@@ -1,59 +1,61 @@
 <x-app-layout>
-    <x-slot name="title">My Assigned Matches</x-slot>
-    <x-slot name="subtitle">View and update the scores of your assigned matches.</x-slot>
+    <x-slot name="title">My Matches</x-slot>
+    <x-slot name="subtitle">Matches assigned to you for score updates.</x-slot>
 
     <div class="space-y-6">
         @if(session('success'))
-            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-2xl">
+            <x-ui.alert>
                 {{ session('success') }}
-            </div>
+            </x-ui.alert>
         @endif
 
-        <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
-            <table class="w-full text-left">
-                <thead class="text-xs uppercase text-slate-400 tracking-[0.2em]">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <p class="text-sm text-slate-500">Assigned matches: {{ $matches->count() }}</p>
+            <x-ui.badge variant="info">Referee Panel</x-ui.badge>
+        </div>
+
+        <x-ui.card padding="p-0">
+            <x-ui.table>
+                <thead class="bg-slate-50 text-xs uppercase tracking-[0.18em] text-slate-400">
                     <tr>
-                        <th class="p-6">Tournament</th>
-                        <th class="p-6">Participant A</th>
-                        <th class="p-6">Participant B</th>
-                        <th class="p-6">Date</th>
-                        <th class="p-6">Score</th>
-                        <th class="p-6">Status</th>
-                        <th class="p-6">Action</th>
+                        <th class="p-5">Tournament</th>
+                        <th class="p-5">Participant A</th>
+                        <th class="p-5">Participant B</th>
+                        <th class="p-5">Date</th>
+                        <th class="p-5">Score</th>
+                        <th class="p-5">Status</th>
+                        <th class="p-5">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($matches as $match)
                         <tr class="border-t border-slate-100">
-                            <td class="p-6 font-semibold">{{ $match->tournament?->title }}</td>
-                            <td class="p-6">{{ $match->participantA?->name }}</td>
-                            <td class="p-6">{{ $match->participantB?->name }}</td>
-                            <td class="p-6">{{ $match->match_date?->format('Y-m-d H:i') ?? '-' }}</td>
-                            <td class="p-6">{{ $match->score_a ?? 0 }} - {{ $match->score_b ?? 0 }}</td>
-                            <td class="p-6">
-                                <span class="px-3 py-1 rounded-full text-xs font-bold
-                                    {{ $match->status === 'finished' ? 'bg-green-50 text-green-600' : '' }}
-                                    {{ $match->status === 'in_progress' ? 'bg-orange-50 text-orange-600' : '' }}
-                                    {{ $match->status === 'scheduled' ? 'bg-blue-50 text-blue-600' : '' }}">
-                                    {{ $match->status }}
-                                </span>
+                            <td class="p-5 font-semibold text-slate-900">{{ $match->tournament?->title }}</td>
+                            <td class="p-5">{{ $match->participantA?->name }}</td>
+                            <td class="p-5">{{ $match->participantB?->name }}</td>
+                            <td class="p-5">{{ $match->match_date?->format('Y-m-d H:i') ?? '-' }}</td>
+                            <td class="p-5">{{ $match->score_a ?? '-' }} - {{ $match->score_b ?? '-' }}</td>
+                            <td class="p-5">
+                                <x-ui.badge :status="$match->status">
+                                    {{ str_replace('_', ' ', $match->status) }}
+                                </x-ui.badge>
                             </td>
-                            <td class="p-6">
-                                <a href="{{ route('referee.matches.edit', $match) }}"
-                                   class="px-4 py-2 rounded-xl bg-blue-50 text-blue-600 text-sm font-semibold">
+                            <td class="p-5">
+                                <x-ui.button as="a" :href="route('referee.matches.edit', $match)" variant="primary" size="sm">
                                     Update Score
-                                </a>
+                                </x-ui.button>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="p-6 text-center text-slate-500">
-                                No assigned matches found.
+                            <td colspan="7" class="p-10 text-center">
+                                <p class="text-lg font-semibold text-slate-700">No assigned matches found</p>
+                                <p class="mt-1 text-sm text-slate-500">You will see matches here once an organizer assigns them.</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
-        </div>
+            </x-ui.table>
+        </x-ui.card>
     </div>
 </x-app-layout>

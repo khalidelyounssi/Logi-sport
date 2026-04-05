@@ -14,8 +14,8 @@ class UpdateRefereeMatchScoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'score_a' => ['required', 'integer', 'min:0'],
-            'score_b' => ['required', 'integer', 'min:0'],
+            'score_a' => ['nullable', 'integer', 'min:0', 'required_if:status,finished'],
+            'score_b' => ['nullable', 'integer', 'min:0', 'required_if:status,finished'],
             'status' => ['required', 'in:scheduled,in_progress,finished'],
         ];
     }

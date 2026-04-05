@@ -1,53 +1,57 @@
 <x-guest-layout>
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+    <x-ui.card padding="p-8 sm:p-10">
+        <div class="mb-8 text-center">
+            <p class="text-xs uppercase tracking-[0.25em] text-slate-400">Logi-Sport</p>
+            <h1 class="mt-2 text-3xl font-black text-slate-900">Create Account</h1>
+            <p class="mt-2 text-sm text-slate-500">Join the platform as organizer, player, or referee.</p>
+        </div>
 
-        <h2 class="text-2xl font-bold text-center mb-6">Register</h2>
+        @if($errors->any())
+            <x-ui.alert variant="error" class="mb-5">
+                {{ $errors->first() }}
+            </x-ui.alert>
+        @endif
 
-        <form method="POST" action="{{ route('register') }}">
+        <form method="POST" action="{{ route('register') }}" class="space-y-5">
             @csrf
 
-            <!-- Name -->
-            <div class="mb-4">
-                <input type="text" name="name" placeholder="Full Name"
-                    class="w-full rounded-xl border-gray-300">
+            <div>
+                <label for="name" class="ui-label">Full Name</label>
+                <input id="name" type="text" name="name" value="{{ old('name') }}" required autocomplete="name" class="ui-input">
             </div>
 
-            <!-- Email -->
-            <div class="mb-4">
-                <input type="email" name="email" placeholder="Email"
-                    class="w-full rounded-xl border-gray-300">
+            <div>
+                <label for="email" class="ui-label">Email</label>
+                <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" class="ui-input">
             </div>
 
-            <!-- Role -->
-            <div class="mb-4">
-                <select name="role" class="w-full rounded-xl border-gray-300">
-                    <option value="player">Player</option>
-                    <option value="organizer">Organizer</option>
-                    <option value="referee">Referee</option>
+            <div>
+                <label for="role" class="ui-label">Role</label>
+                <select id="role" name="role" class="ui-select" required>
+                    <option value="player" @selected(old('role') === 'player')>Player</option>
+                    <option value="organizer" @selected(old('role') === 'organizer')>Organizer</option>
+                    <option value="referee" @selected(old('role') === 'referee')>Referee</option>
                 </select>
             </div>
 
-            <!-- Password -->
-            <div class="mb-4">
-                <input type="password" name="password" placeholder="Password"
-                    class="w-full rounded-xl border-gray-300">
+            <div>
+                <label for="password" class="ui-label">Password</label>
+                <input id="password" type="password" name="password" required autocomplete="new-password" class="ui-input">
             </div>
 
-            <!-- Confirm -->
-            <div class="mb-4">
-                <input type="password" name="password_confirmation" placeholder="Confirm Password"
-                    class="w-full rounded-xl border-gray-300">
+            <div>
+                <label for="password_confirmation" class="ui-label">Confirm Password</label>
+                <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" class="ui-input">
             </div>
 
-            <button class="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold">
-                Register
-            </button>
-
-            <p class="text-center text-sm mt-4">
-                Already have account?
-                <a href="{{ route('login') }}" class="text-blue-600">Login</a>
-            </p>
-
+            <x-ui.button type="submit" variant="primary" size="lg" class="w-full">
+                Create Account
+            </x-ui.button>
         </form>
-    </div>
+
+        <p class="mt-6 text-center text-sm text-slate-500">
+            Already have an account?
+            <a href="{{ route('login') }}" class="font-semibold text-blue-600 hover:text-blue-700">Sign in</a>
+        </p>
+    </x-ui.card>
 </x-guest-layout>

@@ -1,66 +1,68 @@
 <x-app-layout>
-    <x-slot name="title">Tournaments</x-slot>
-    <x-slot name="subtitle">Manage and monitor your athletic competitions.</x-slot>
+    <x-slot name="title">Organizer Dashboard</x-slot>
+    <x-slot name="subtitle">Plan tournaments, manage participants, and track competition progress.</x-slot>
 
-    <div class="space-y-8">
-        <div class="flex items-center justify-between">
-            <div></div>
-            <a href="#" class="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-4 rounded-2xl shadow-lg hover:bg-blue-700 transition font-semibold">
-                <span>➕</span>
-                <span>Create Tournament</span>
-            </a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-            <x-stat-card title="Live Matches" value="12" hint="LIVE" />
-            <x-stat-card title="Total Teams" value="148" hint="+12%" />
-            <x-stat-card title="Upcoming" value="06" hint="Next 30 Days" />
-            <x-stat-card title="Revenue" value="$24k" hint="↗" />
-        </div>
-
-        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-            <div class="p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div class="flex gap-3 text-sm">
-                    <button class="px-5 py-3 rounded-2xl bg-blue-50 text-blue-600 font-semibold">All Tournaments</button>
-                    <button class="px-5 py-3 rounded-2xl text-slate-500 hover:bg-slate-50">Active</button>
-                    <button class="px-5 py-3 rounded-2xl text-slate-500 hover:bg-slate-50">Drafts</button>
+    <div class="space-y-6">
+        <x-ui.card class="bg-gradient-to-r from-blue-700 to-cyan-600 text-white">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Organizer Workspace</p>
+                    <h2 class="mt-1 text-2xl font-black">Tournament Operations</h2>
+                    <p class="mt-1 text-sm text-blue-100">Use the flow: Tournament -> Participants -> Matches -> Standings.</p>
                 </div>
 
-                <div class="flex gap-3">
-                    <input type="text" placeholder="Filter by name..." class="px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm outline-none">
-                    <button class="px-4 py-3 rounded-2xl border border-slate-200 bg-white">⬇</button>
-                </div>
+                <x-ui.button as="a" :href="route('tournaments.create')" variant="secondary" size="lg">
+                    <span>➕</span>
+                    <span>Create Tournament</span>
+                </x-ui.button>
             </div>
+        </x-ui.card>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="text-xs uppercase tracking-[0.2em] text-slate-400">
-                        <tr>
-                            <th class="p-6">Tournament Name</th>
-                            <th class="p-6">Sport</th>
-                            <th class="p-6">Format</th>
-                            <th class="p-6">Date</th>
-                            <th class="p-6">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-slate-700">
-                        <tr class="border-t border-slate-100">
-                            <td class="p-6 font-semibold">Metro Elite Basketball Open</td>
-                            <td class="p-6"><span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold">Basketball</span></td>
-                            <td class="p-6">Direct Elimination</td>
-                            <td class="p-6">Oct 12 - Oct 20</td>
-                            <td class="p-6 text-orange-500 font-semibold">LIVE</td>
-                        </tr>
-                        <tr class="border-t border-slate-100">
-                            <td class="p-6 font-semibold">Summer Kickoff Classic</td>
-                            <td class="p-6"><span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold">Soccer</span></td>
-                            <td class="p-6">Round Robin</td>
-                            <td class="p-6">Nov 05 - Nov 12</td>
-                            <td class="p-6 text-blue-600 font-semibold">UPCOMING</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <x-stat-card title="Active Tournaments" value="8" hint="In progress + upcoming" />
+            <x-stat-card title="Registered Teams" value="132" hint="Across all tournaments" tone="slate" />
+            <x-stat-card title="Matches Played" value="96" hint="Updated by referees" tone="emerald" />
+            <x-stat-card title="Pending Scores" value="11" hint="Need validation" tone="amber" />
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+            <x-ui.card class="xl:col-span-2">
+                <h3 class="text-lg font-black text-slate-900">Quick Navigation</h3>
+                <p class="mt-1 text-sm text-slate-500">Jump directly into your tournament workflow.</p>
+
+                <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <x-ui.button as="a" :href="route('tournaments.index')" variant="secondary" size="lg" class="justify-start">
+                        🏆 Tournaments
+                    </x-ui.button>
+                    <x-ui.button as="a" :href="route('tournaments.index')" variant="secondary" size="lg" class="justify-start">
+                        👥 Participants
+                    </x-ui.button>
+                    <x-ui.button as="a" :href="route('tournaments.index')" variant="secondary" size="lg" class="justify-start">
+                        ⚔️ Matches
+                    </x-ui.button>
+                    <x-ui.button as="a" :href="route('tournaments.index')" variant="secondary" size="lg" class="justify-start">
+                        🥇 Standings
+                    </x-ui.button>
+                </div>
+            </x-ui.card>
+
+            <x-ui.card>
+                <h3 class="text-lg font-black text-slate-900">Recent Updates</h3>
+                <div class="mt-4 space-y-3">
+                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                        <p class="font-semibold text-slate-800">Summer Cup</p>
+                        <p class="text-sm text-slate-500">Participants updated</p>
+                    </div>
+                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                        <p class="font-semibold text-slate-800">City League</p>
+                        <p class="text-sm text-slate-500">Scores pending from referees</p>
+                    </div>
+                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                        <p class="font-semibold text-slate-800">Regional Open</p>
+                        <p class="text-sm text-slate-500">Standings recalculated</p>
+                    </div>
+                </div>
+            </x-ui.card>
         </div>
     </div>
 </x-app-layout>

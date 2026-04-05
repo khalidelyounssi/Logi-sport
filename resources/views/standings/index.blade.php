@@ -1,80 +1,120 @@
 <x-app-layout>
     <x-slot name="title">Standings</x-slot>
-    <x-slot name="subtitle">{{ $tournament->title }} rankings and performance.</x-slot>
+    <x-slot name="subtitle">{{ $tournament->title }} ranking table and performance summary.</x-slot>
 
-    <div class="space-y-8">
+    @php
+        $leaders = $standings->take(3);
+    @endphp
+
+    <div class="space-y-6">
         @if(session('success'))
-            <div class="bg-green-50 text-green-700 px-5 py-4 rounded-2xl border border-green-100">
+            <x-ui.alert>
                 {{ session('success') }}
-            </div>
+            </x-ui.alert>
         @endif
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-3">Tournament</p>
-                <h3 class="text-2xl font-black">{{ $tournament->title }}</h3>
-            </div>
+        <x-ui.card class="bg-gradient-to-r from-emerald-600 to-blue-700 text-white">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.2em] text-emerald-100">Tournament Flow</p>
+                    <h2 class="mt-1 text-2xl font-black">{{ $tournament->title }}</h2>
+                    <p class="mt-1 text-sm text-emerald-100">Step 4/4: Live ranking based on scored matches.</p>
+                </div>
 
-            <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-3">Sport</p>
-                <h3 class="text-2xl font-black">{{ $tournament->sport?->name }}</h3>
+                <div class="flex flex-wrap gap-2">
+                    <x-ui.button as="a" :href="route('tournaments.participants.index', $tournament)" variant="secondary" size="sm">Participants</x-ui.button>
+                    <x-ui.button as="a" :href="route('tournaments.matches.index', $tournament)" variant="secondary" size="sm">Matches</x-ui.button>
+                </div>
             </div>
+        </x-ui.card>
 
-            <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-3">Participants</p>
-                <h3 class="text-2xl font-black">{{ $standings->count() }}</h3>
-            </div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <x-ui.card>
+                <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Tournament</p>
+                <h3 class="mt-2 text-xl font-black">{{ $tournament->title }}</h3>
+            </x-ui.card>
+
+            <x-ui.card>
+                <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Sport</p>
+                <h3 class="mt-2 text-xl font-black">{{ $tournament->sport?->name ?? '-' }}</h3>
+            </x-ui.card>
+
+            <x-ui.card>
+                <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Participants</p>
+                <h3 class="mt-2 text-xl font-black">{{ $standings->count() }}</h3>
+            </x-ui.card>
         </div>
 
-        @if(in_array(auth()->user()->role, ['organizer', 'admin']))
-            <div class="flex justify-end">
-                <form action="{{ route('tournaments.standings.recalculate', $tournament) }}" method="POST">
-                    @csrf
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg">
-                        Recalculate Standings
-                    </button>
-                </form>
+        @if($leaders->isNotEmpty())
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                @foreach($leaders as $index => $leader)
+                    <x-ui.card class="{{ $index === 0 ? 'border-yellow-300 bg-yellow-50' : '' }}">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Rank {{ $index + 1 }}</p>
+                                <h4 class="mt-1 text-lg font-black text-slate-900">{{ $leader->participant?->name }}</h4>
+                            </div>
+                            <span class="text-2xl">{{ $index === 0 ? '🏆' : ($index === 1 ? '🥈' : '🥉') }}</span>
+                        </div>
+                        <p class="mt-3 text-sm text-slate-600">{{ $leader->points }} pts • {{ $leader->won }}W / {{ $leader->draw }}D / {{ $leader->lost }}L</p>
+                    </x-ui.card>
+                @endforeach
             </div>
         @endif
 
-        <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
-            <table class="w-full text-left">
-                <thead class="text-xs uppercase text-slate-400 tracking-[0.2em] bg-slate-50">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <p class="text-sm text-slate-500">Automatically ranked by points, wins, and losses.</p>
+
+            @if(in_array(auth()->user()->role, ['organizer', 'admin']))
+                <form action="{{ route('tournaments.standings.recalculate', $tournament) }}" method="POST">
+                    @csrf
+                    <x-ui.button type="submit" variant="primary">
+                        <span>🔄</span>
+                        <span>Recalculate Standings</span>
+                    </x-ui.button>
+                </form>
+            @endif
+        </div>
+
+        <x-ui.card padding="p-0">
+            <x-ui.table>
+                <thead class="bg-slate-50 text-xs uppercase tracking-[0.18em] text-slate-400">
                     <tr>
-                        <th class="p-6">Rank</th>
-                        <th class="p-6">Participant</th>
-                        <th class="p-6">Points</th>
-                        <th class="p-6">Played</th>
-                        <th class="p-6">Won</th>
-                        <th class="p-6">Draw</th>
-                        <th class="p-6">Lost</th>
+                        <th class="p-5">Rank</th>
+                        <th class="p-5">Participant</th>
+                        <th class="p-5">Points</th>
+                        <th class="p-5">Played</th>
+                        <th class="p-5">Won</th>
+                        <th class="p-5">Draw</th>
+                        <th class="p-5">Lost</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @forelse($standings as $index => $standing)
-                        <tr class="border-t border-slate-100">
-                            <td class="p-6">
-                                <span class="inline-flex w-10 h-10 items-center justify-center rounded-full 
-                                    {{ $index === 0 ? 'bg-yellow-100 text-yellow-700' : 'bg-slate-100 text-slate-700' }}">
+                        <tr class="border-t border-slate-100 {{ $index < 3 ? 'bg-blue-50/40' : '' }}">
+                            <td class="p-5">
+                                <span class="inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold {{ $index === 0 ? 'bg-yellow-100 text-yellow-700' : 'bg-slate-100 text-slate-700' }}">
                                     {{ $index + 1 }}
                                 </span>
                             </td>
-                            <td class="p-6 font-semibold">{{ $standing->participant?->name }}</td>
-                            <td class="p-6 font-bold text-blue-600">{{ $standing->points }}</td>
-                            <td class="p-6">{{ $standing->played }}</td>
-                            <td class="p-6 text-green-600 font-semibold">{{ $standing->won }}</td>
-                            <td class="p-6 text-orange-500 font-semibold">{{ $standing->draw }}</td>
-                            <td class="p-6 text-red-500 font-semibold">{{ $standing->lost }}</td>
+                            <td class="p-5 font-semibold text-slate-900">{{ $standing->participant?->name }}</td>
+                            <td class="p-5 text-lg font-black text-blue-700">{{ $standing->points }}</td>
+                            <td class="p-5">{{ $standing->played }}</td>
+                            <td class="p-5 font-semibold text-emerald-600">{{ $standing->won }}</td>
+                            <td class="p-5 font-semibold text-amber-600">{{ $standing->draw }}</td>
+                            <td class="p-5 font-semibold text-red-600">{{ $standing->lost }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="p-6 text-center text-slate-500">
-                                No standings available.
+                            <td colspan="7" class="p-10 text-center">
+                                <p class="text-lg font-semibold text-slate-700">No standings yet</p>
+                                <p class="mt-1 text-sm text-slate-500">Standings appear after matches are generated and scores are saved.</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
-        </div>
+            </x-ui.table>
+        </x-ui.card>
     </div>
 </x-app-layout>
