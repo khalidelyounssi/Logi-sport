@@ -15,21 +15,13 @@ class MatchController extends Controller
 {
     public function index(Tournament $tournament): View
     {
-        abort_if(! in_array(auth()->user()->role, ['organizer', 'referee'], true), 403);
+        abort_if(auth()->user()->role !== 'organizer', 403);
+        abort_if($tournament->organizer_id !== auth()->id(), 403);
 
-        if (auth()->user()->role === 'organizer') {
-            abort_if($tournament->organizer_id !== auth()->id(), 403);
-        }
-
-        $matchesQuery = $tournament->matches()
+        $matches = $tournament->matches()
             ->with(['participantA', 'participantB', 'referee'])
-            ->latest();
-
-        if (auth()->user()->role === 'referee') {
-            $matchesQuery->where('referee_id', auth()->id());
-        }
-
-        $matches = $matchesQuery->get();
+            ->latest()
+            ->get();
 
         return view('matches.index', compact('tournament', 'matches'));
     }
@@ -40,7 +32,10 @@ class MatchController extends Controller
         abort_if($tournament->organizer_id !== auth()->id(), 403);
 
         $participants = $tournament->participants()->orderBy('name')->get();
-        $referees = User::where('role', 'referee')->where('is_active', true)->orderBy('name')->get();
+        $referees = User::where('role', 'referee')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
 
         return view('matches.create', compact('tournament', 'participants', 'referees'));
     }
@@ -56,8 +51,8 @@ class MatchController extends Controller
         $participantIds = $tournament->participants()->pluck('id')->toArray();
 
         abort_if(
-            ! in_array((int) $request->participant_a_id, $participantIds, true) ||
-            ! in_array((int) $request->participant_b_id, $participantIds, true),
+            !in_array((int) $request->participant_a_id, $participantIds, true) ||
+            !in_array((int) $request->participant_b_id, $participantIds, true),
             422
         );
 
@@ -83,16 +78,9 @@ class MatchController extends Controller
 
     public function show(Tournament $tournament, MatchModel $match): View
     {
-        abort_if(! in_array(auth()->user()->role, ['organizer', 'referee'], true), 403);
+        abort_if(auth()->user()->role !== 'organizer', 403);
+        abort_if($tournament->organizer_id !== auth()->id(), 403);
         abort_if($match->tournament_id !== $tournament->id, 404);
-
-        if (auth()->user()->role === 'organizer') {
-            abort_if($tournament->organizer_id !== auth()->id(), 403);
-        }
-
-        if (auth()->user()->role === 'referee') {
-            abort_if($match->referee_id !== auth()->id(), 403);
-        }
 
         $match->load(['participantA', 'participantB', 'referee', 'tournament']);
 
@@ -101,19 +89,15 @@ class MatchController extends Controller
 
     public function edit(Tournament $tournament, MatchModel $match): View
     {
-        abort_if(! in_array(auth()->user()->role, ['organizer', 'referee'], true), 403);
+        abort_if(auth()->user()->role !== 'organizer', 403);
+        abort_if($tournament->organizer_id !== auth()->id(), 403);
         abort_if($match->tournament_id !== $tournament->id, 404);
 
-        if (auth()->user()->role === 'organizer') {
-            abort_if($tournament->organizer_id !== auth()->id(), 403);
-        }
-
-        if (auth()->user()->role === 'referee') {
-            abort_if($match->referee_id !== auth()->id(), 403);
-        }
-
         $participants = $tournament->participants()->orderBy('name')->get();
-        $referees = User::where('role', 'referee')->where('is_active', true)->orderBy('name')->get();
+        $referees = User::where('role', 'referee')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
 
         return view('matches.edit', compact('tournament', 'match', 'participants', 'referees'));
     }
@@ -124,42 +108,30 @@ class MatchController extends Controller
         MatchModel $match,
         StandingService $standingService
     ): RedirectResponse {
-        abort_if(! in_array(auth()->user()->role, ['organizer', 'referee'], true), 403);
+        abort_if(auth()->user()->role !== 'organizer', 403);
+        abort_if($tournament->organizer_id !== auth()->id(), 403);
         abort_if($match->tournament_id !== $tournament->id, 404);
-
-        if (auth()->user()->role === 'organizer') {
-            abort_if($tournament->organizer_id !== auth()->id(), 403);
-        }
-
-        if (auth()->user()->role === 'referee') {
-            abort_if($match->referee_id !== auth()->id(), 403);
-        }
 
         $participantIds = $tournament->participants()->pluck('id')->toArray();
 
         abort_if(
-            ! in_array((int) $request->participant_a_id, $participantIds, true) ||
-            ! in_array((int) $request->participant_b_id, $participantIds, true),
+            !in_array((int) $request->participant_a_id, $participantIds, true) ||
+            !in_array((int) $request->participant_b_id, $participantIds, true),
             422
         );
 
         $previousStatus = $match->status;
 
-        $data = [
+        $match->update([
             'participant_a_id' => $request->participant_a_id,
             'participant_b_id' => $request->participant_b_id,
             'match_date' => $request->match_date,
             'location' => $request->location,
             'status' => $request->status,
+            'referee_id' => $request->referee_id,
             'score_a' => $request->score_a,
             'score_b' => $request->score_b,
-        ];
-
-        if (auth()->user()->role === 'organizer') {
-            $data['referee_id'] = $request->referee_id;
-        }
-
-        $match->update($data);
+        ]);
 
         if ($match->status === 'finished' || $previousStatus === 'finished') {
             $standingService->recalculate($tournament);

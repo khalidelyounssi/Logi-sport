@@ -6,6 +6,8 @@ use App\Http\Controllers\RefereeMatchController;
 use App\Http\Controllers\StandingController;
 use App\Http\Controllers\TournamentController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -13,11 +15,14 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
 
+
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+Route::patch('/admin/users/{user}/toggle-status', [AdminController::class, 'toggleStatus'])->name('admin.users.toggleStatus');
+Route::patch('/admin/users/{user}/change-role', [AdminController::class, 'changeRole'])->name('admin.users.changeRole');
     // Dashboards
-    Route::get('/admin/dashboard', function () {
-        abort_if(auth()->user()->role !== 'admin', 403);
-        return view('dashboards.admin');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard'); 
 
     Route::get('/organizer/dashboard', function () {
         abort_if(auth()->user()->role !== 'organizer', 403);

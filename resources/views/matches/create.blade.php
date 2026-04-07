@@ -18,8 +18,12 @@
                 </div>
 
                 <div class="flex flex-wrap gap-2">
-                    <x-ui.button as="a" :href="route('tournaments.participants.index', $tournament)" variant="secondary" size="sm">Participants</x-ui.button>
-                    <x-ui.button as="a" :href="route('tournaments.standings.index', $tournament)" variant="secondary" size="sm">Standings</x-ui.button>
+                    <x-ui.button as="a" :href="route('tournaments.participants.index', $tournament)" variant="secondary" size="sm">
+                        Participants
+                    </x-ui.button>
+                    <x-ui.button as="a" :href="route('tournaments.standings.index', $tournament)" variant="secondary" size="sm">
+                        Standings
+                    </x-ui.button>
                 </div>
             </div>
         </x-ui.card>

@@ -12,6 +12,47 @@ use Illuminate\View\View;
 
 class AdminController extends Controller
 {
+    public function dashboard(): View
+    {
+        abort_if(auth()->user()->role !== 'admin', 403);
+
+        $totalUsers = User::count();
+        $totalTournaments = Tournament::count();
+        $totalMatches = MatchModel::count();
+        $totalSports = Sport::count();
+
+        $activeUsers = User::where('is_active', true)->count();
+        $suspendedUsers = User::where('is_active', false)->count();
+        $activeMatches = MatchModel::whereIn('status', ['scheduled', 'in_progress'])->count();
+
+        $usersByRole = [
+            'admins' => User::where('role', 'admin')->count(),
+            'organizers' => User::where('role', 'organizer')->count(),
+            'referees' => User::where('role', 'referee')->count(),
+            'players' => User::where('role', 'player')->count(),
+        ];
+
+        $sportsOverview = Sport::withCount('tournaments')
+            ->orderByDesc('tournaments_count')
+            ->take(5)
+            ->get();
+
+        $recentUsers = User::latest()->take(5)->get();
+
+        return view('dashboards.admin', compact(
+            'totalUsers',
+            'totalTournaments',
+            'totalMatches',
+            'totalSports',
+            'activeUsers',
+            'suspendedUsers',
+            'activeMatches',
+            'usersByRole',
+            'sportsOverview',
+            'recentUsers'
+        ));
+    }
+
     public function users(): View
     {
         abort_if(auth()->user()->role !== 'admin', 403);
@@ -44,35 +85,14 @@ class AdminController extends Controller
             'role' => ['required', 'in:admin,organizer,referee,player'],
         ]);
 
+        if ($user->id === auth()->id() && $request->role !== 'admin') {
+            return back()->with('error', 'You cannot remove your own admin role.');
+        }
+
         $user->update([
             'role' => $request->role,
         ]);
 
         return back()->with('success', 'User role updated successfully.');
-    }
-
-    public function statistics(): View
-    {
-        abort_if(auth()->user()->role !== 'admin', 403);
-
-        $totalUsers = User::count();
-        $totalTournaments = Tournament::count();
-        $totalMatches = MatchModel::count();
-        $totalSports = Sport::count();
-
-        $usersByRole = [
-            'admins' => User::where('role', 'admin')->count(),
-            'organizers' => User::where('role', 'organizer')->count(),
-            'referees' => User::where('role', 'referee')->count(),
-            'players' => User::where('role', 'player')->count(),
-        ];
-
-        return view('admin.statistics', compact(
-            'totalUsers',
-            'totalTournaments',
-            'totalMatches',
-            'totalSports',
-            'usersByRole'
-        ));
     }
 }

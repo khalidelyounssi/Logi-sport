@@ -14,7 +14,7 @@
                 <div>
                     <p class="text-xs uppercase tracking-[0.2em] text-slate-300">Step 3/4</p>
                     <h2 class="mt-1 text-2xl font-black">Match Update</h2>
-                    <p class="mt-1 text-sm text-slate-300">Keep fixture data and score information accurate.</p>
+                    <p class="mt-1 text-sm text-slate-300">Keep fixture data, referee assignment, and scores accurate.</p>
                 </div>
 
                 <x-ui.button as="a" :href="route('tournaments.matches.index', $tournament)" variant="secondary" size="sm">
