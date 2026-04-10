@@ -3,31 +3,68 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tournament;
-use App\Services\StandingService;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Participant;
 use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class StandingController extends Controller
 {
     public function index(Tournament $tournament): View
     {
-        abort_if(!in_array(auth()->user()->role, ['organizer', 'player', 'referee', 'admin']), 403);
+        $user = auth()->user();
 
-        $standings = $tournament->standings()
-            ->with('participant')
-            ->orderByDesc('points')
-            ->orderByDesc('won')
-            ->orderBy('lost')
-            ->get();
+        // ADMIN
+        if ($user->role === 'admin') {
+            $standings = $tournament->standings()
+                ->with('participant')
+                ->orderByDesc('points')
+                ->get();
 
-        return view('standings.index', compact('tournament', 'standings'));
+            return view('standings.index', compact('tournament', 'standings'));
+        }
+
+        // ORGANIZER
+        if ($user->role === 'organizer') {
+            abort_if($tournament->organizer_id !== $user->id, 403);
+
+            $standings = $tournament->standings()
+                ->with('participant')
+                ->orderByDesc('points')
+                ->get();
+
+            return view('standings.index', compact('tournament', 'standings'));
+        }
+
+        // PLAYER
+        if ($user->role === 'player') {
+            $isParticipant = Participant::where('tournament_id', $tournament->id)
+                ->where('user_id', $user->id)
+                ->exists();
+
+            abort_if(! $isParticipant, 403);
+
+            $standings = $tournament->standings()
+                ->with('participant')
+                ->orderByDesc('points')
+                ->get();
+
+            return view('standings.index', compact('tournament', 'standings'));
+        }
+
+        abort(403);
     }
 
-    public function recalculate(Tournament $tournament, StandingService $standingService): RedirectResponse
+    public function recalculate(Tournament $tournament): RedirectResponse
     {
-        abort_if(!in_array(auth()->user()->role, ['organizer', 'admin']), 403);
+        $user = auth()->user();
 
-        $standingService->recalculate($tournament);
+        abort_if(! in_array($user->role, ['organizer', 'admin']), 403);
+
+        if ($user->role === 'organizer') {
+            abort_if($tournament->organizer_id !== $user->id, 403);
+        }
+
+        app(\App\Services\StandingService::class)->recalculate($tournament);
 
         return redirect()
             ->route('tournaments.standings.index', $tournament)

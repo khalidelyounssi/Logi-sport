@@ -2,30 +2,34 @@
     <x-slot name="title">Player Dashboard</x-slot>
     <x-slot name="subtitle">Follow your tournaments, match results, and performance trends.</x-slot>
 
-    @php
-        $myTournamentsRoute = Route::has('player.tournaments.index') ? route('player.tournaments.index') : '#';
-    @endphp
-
     <div class="space-y-6">
         <x-ui.card class="bg-gradient-to-r from-blue-700 to-indigo-700 text-white">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Player Space</p>
                     <h2 class="mt-1 text-2xl font-black">Performance Hub</h2>
-                    <p class="mt-1 text-sm text-blue-100">Track rankings, recent matches, and your tournament history.</p>
+                    <p class="mt-1 text-sm text-blue-100">
+                        Track rankings, recent matches, and your tournament history.
+                    </p>
                 </div>
 
-                <x-ui.button as="a" :href="$myTournamentsRoute" variant="secondary" size="lg" :class="!Route::has('player.tournaments.index') ? 'pointer-events-none opacity-50' : ''">
-                    🎮 My Tournaments
-                </x-ui.button>
+                <div class="flex flex-wrap gap-2">
+                    <x-ui.button as="a" :href="route('player.tournaments')" variant="secondary" size="lg">
+                        🎮 My Tournaments
+                    </x-ui.button>
+
+                    <x-ui.button as="a" :href="route('player.matches')" variant="secondary" size="lg">
+                        ⚽ My Matches
+                    </x-ui.button>
+                </div>
             </div>
         </x-ui.card>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <x-stat-card title="Matches Played" value="18" hint="This season" />
-            <x-stat-card title="Wins" value="10" hint="Win rate 56%" tone="emerald" />
-            <x-stat-card title="Goals / Points" value="12" hint="Overall contribution" tone="blue" />
-            <x-stat-card title="Rank" value="#4" hint="Current ladder" tone="amber" />
+            <x-stat-card title="Matches Played" :value="$matchesPlayed" hint="Finished matches" />
+            <x-stat-card title="Wins" :value="$wins" hint="Across linked participations" tone="emerald" />
+            <x-stat-card title="Goals / Points" :value="$goalsOrPoints" hint="Overall contribution" tone="blue" />
+            <x-stat-card title="Rank" :value="$rank" hint="Best current standing" tone="amber" />
         </div>
 
         <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
@@ -36,45 +40,85 @@
                 </div>
 
                 <div class="divide-y divide-slate-100">
-                    <div class="flex items-center justify-between px-6 py-4">
-                        <div>
-                            <p class="font-semibold text-slate-800">City League • Round 5</p>
-                            <p class="text-sm text-slate-500">Falcons vs Raptors</p>
+                    @forelse($recentMatches as $match)
+                        @php
+                            $isA = $match->participantA?->user_id === auth()->id();
+                            $isB = $match->participantB?->user_id === auth()->id();
+
+                            $result = 'Pending';
+                            $variant = 'info';
+
+                            if ($match->status === 'finished') {
+                                if (
+                                    ($isA && ($match->score_a ?? 0) > ($match->score_b ?? 0)) ||
+                                    ($isB && ($match->score_b ?? 0) > ($match->score_a ?? 0))
+                                ) {
+                                    $result = 'Win';
+                                    $variant = 'success';
+                                } elseif (($match->score_a ?? 0) === ($match->score_b ?? 0)) {
+                                    $result = 'Draw';
+                                    $variant = 'warning';
+                                } else {
+                                    $result = 'Loss';
+                                    $variant = 'danger';
+                                }
+                            }
+                        @endphp
+
+                        <div class="flex items-center justify-between px-6 py-4">
+                            <div>
+                                <p class="font-semibold text-slate-800">
+                                    {{ $match->tournament?->title ?? 'Tournament' }}
+                                </p>
+
+                                <p class="text-sm text-slate-500">
+                                    {{ $match->participantA?->name }} vs {{ $match->participantB?->name }}
+                                    @if(!is_null($match->score_a) || !is_null($match->score_b))
+                                        • {{ $match->score_a ?? 0 }} - {{ $match->score_b ?? 0 }}
+                                    @endif
+                                </p>
+
+                                <p class="mt-1 text-xs text-slate-400">
+                                    {{ $match->match_date?->format('Y-m-d H:i') ?? 'No date' }}
+                                    @if($match->location)
+                                        • {{ $match->location }}
+                                    @endif
+                                </p>
+                            </div>
+
+                            <x-ui.badge variant="{{ $variant }}">
+                                {{ $result }}
+                            </x-ui.badge>
                         </div>
-                        <x-ui.badge variant="success">Win</x-ui.badge>
-                    </div>
-                    <div class="flex items-center justify-between px-6 py-4">
-                        <div>
-                            <p class="font-semibold text-slate-800">Summer Cup • Group Stage</p>
-                            <p class="text-sm text-slate-500">Raptors vs Hawks</p>
+                    @empty
+                        <div class="px-6 py-8 text-sm text-slate-500">
+                            No recent matches found.
                         </div>
-                        <x-ui.badge variant="warning">Draw</x-ui.badge>
-                    </div>
-                    <div class="flex items-center justify-between px-6 py-4">
-                        <div>
-                            <p class="font-semibold text-slate-800">Regional Open • Quarterfinal</p>
-                            <p class="text-sm text-slate-500">Raptors vs Wolves</p>
-                        </div>
-                        <x-ui.badge variant="danger">Loss</x-ui.badge>
-                    </div>
+                    @endforelse
                 </div>
             </x-ui.card>
 
             <x-ui.card>
-                <h3 class="text-lg font-black text-slate-900">Performance Snapshot</h3>
+                <h3 class="text-lg font-black text-slate-900">My Tournaments</h3>
+                <p class="mt-1 text-sm text-slate-500">Tournaments where you are registered.</p>
+
                 <div class="mt-4 space-y-3">
-                    <div class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-                        <span class="text-slate-600">Average score</span>
-                        <span class="font-black text-blue-700">7.9</span>
-                    </div>
-                    <div class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-                        <span class="text-slate-600">Win rate</span>
-                        <span class="font-black text-emerald-600">56%</span>
-                    </div>
-                    <div class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-                        <span class="text-slate-600">Streak</span>
-                        <span class="font-black text-amber-600">2W</span>
-                    </div>
+                    @forelse($myTournaments->take(5) as $tournament)
+                        <div class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                            <div>
+                                <p class="font-semibold text-slate-800">{{ $tournament->title }}</p>
+                                <p class="text-sm text-slate-500">{{ $tournament->sport?->name ?? 'No sport' }}</p>
+                            </div>
+
+                            <x-ui.badge variant="info">
+                                {{ $tournament->status }}
+                            </x-ui.badge>
+                        </div>
+                    @empty
+                        <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
+                            You are not linked to any tournament yet.
+                        </div>
+                    @endforelse
                 </div>
             </x-ui.card>
         </div>

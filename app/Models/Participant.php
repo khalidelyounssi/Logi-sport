@@ -15,6 +15,7 @@ class Participant extends Model
         'contact_person',
         'status',
         'tournament_id',
+        'user_id'
     ];
 
     public function tournament()
@@ -36,4 +37,8 @@ class Participant extends Model
     {
         return $this->hasMany(Standing::class);
     }
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
 }       

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\RefereeMatchController;
 use App\Http\Controllers\StandingController;
 use App\Http\Controllers\TournamentController;
@@ -34,11 +35,10 @@ Route::patch('/admin/users/{user}/change-role', [AdminController::class, 'change
         return view('dashboards.referee');
     })->name('referee.dashboard');
 
-    Route::get('/player/dashboard', function () {
-        abort_if(auth()->user()->role !== 'player', 403);
-        return view('dashboards.player');
-    })->name('player.dashboard');
 
+Route::get('/player/dashboard', [PlayerController::class, 'dashboard'])->name('player.dashboard');
+Route::get('/player/matches', [PlayerController::class, 'matches'])->name('player.matches');
+Route::get('/player/tournaments', [PlayerController::class, 'tournaments'])->name('player.tournaments');
     // Tournament CRUD
     Route::resource('tournaments', TournamentController::class);
 

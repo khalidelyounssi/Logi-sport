@@ -29,7 +29,15 @@
 
                 <div>
                     <label for="name" class="ui-label">Participant Name</label>
-                    <input id="name" type="text" name="name" value="{{ old('name') }}" class="ui-input" placeholder="e.g. Red Hawks" required>
+                    <input
+                        id="name"
+                        type="text"
+                        name="name"
+                        value="{{ old('name') }}"
+                        class="ui-input"
+                        placeholder="e.g. Red Hawks"
+                        required
+                    >
                     @error('name')
                         <p class="ui-field-error">{{ $message }}</p>
                     @enderror
@@ -46,10 +54,29 @@
                     @enderror
                 </div>
 
+                <div>
+                    <label for="user_id" class="ui-label">Linked Player (optional)</label>
+                    <select id="user_id" name="user_id" class="ui-select">
+                        <option value="">No linked user</option>
+                        @foreach($players as $player)
+                            <option value="{{ $player->id }}" @selected(old('user_id') == $player->id)>
+                                {{ $player->name }} — {{ $player->email }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="mt-1 text-xs text-slate-500">
+                        Select an existing player account, or leave empty to create an independent participant.
+                    </p>
+                    @error('user_id')
+                        <p class="ui-field-error">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <div class="flex flex-wrap items-center gap-3">
                     <x-ui.button type="submit" size="lg">
                         Save Participant
                     </x-ui.button>
+
                     <x-ui.button as="a" :href="route('tournaments.participants.index', $tournament)" variant="secondary" size="lg">
                         Cancel
                     </x-ui.button>
