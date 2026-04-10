@@ -13,7 +13,6 @@ class AuthenticatedSessionController extends Controller
 {
     public function create(): View
     {
-
         return view('auth.login');
     }
 
@@ -24,6 +23,17 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = Auth::user();
+
+        if (! $user->is_active) {
+            Auth::guard('web')->logout();
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors([
+                'email' => 'Your account has been suspended. Please contact the administrator.',
+            ]);
+        }
 
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
@@ -45,7 +55,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
