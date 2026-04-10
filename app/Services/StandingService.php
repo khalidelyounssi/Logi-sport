@@ -12,7 +12,7 @@ class StandingService
     {
         $tournament->loadMissing([
             'sport:id,win_points,draw_points',
-            'participants:id,tournament_id,name',
+            'participants:id,tournament_id,name,user_id',
             'matches:id,tournament_id,participant_a_id,participant_b_id,score_a,score_b,status',
         ]);
 
@@ -46,24 +46,49 @@ class StandingService
             $standings[$match->participant_a_id]['played']++;
             $standings[$match->participant_b_id]['played']++;
 
-            if ($match->score_a > $match->score_b) {
-                $standings[$match->participant_a_id]['won']++;
-                $standings[$match->participant_a_id]['points'] += $winPoints;
-                $standings[$match->participant_b_id]['lost']++;
+            // ROUND ROBIN
+            if ($tournament->type === 'round_robin') {
+                if ($match->score_a > $match->score_b) {
+                    $standings[$match->participant_a_id]['won']++;
+                    $standings[$match->participant_a_id]['points'] += $winPoints;
+                    $standings[$match->participant_b_id]['lost']++;
+                    continue;
+                }
+
+                if ($match->score_a < $match->score_b) {
+                    $standings[$match->participant_b_id]['won']++;
+                    $standings[$match->participant_b_id]['points'] += $winPoints;
+                    $standings[$match->participant_a_id]['lost']++;
+                    continue;
+                }
+
+                $standings[$match->participant_a_id]['draw']++;
+                $standings[$match->participant_b_id]['draw']++;
+                $standings[$match->participant_a_id]['points'] += $drawPoints;
+                $standings[$match->participant_b_id]['points'] += $drawPoints;
                 continue;
             }
 
-            if ($match->score_a < $match->score_b) {
-                $standings[$match->participant_b_id]['won']++;
-                $standings[$match->participant_b_id]['points'] += $winPoints;
-                $standings[$match->participant_a_id]['lost']++;
+            // ELIMINATION
+            if ($tournament->type === 'elimination') {
+                if ($match->score_a > $match->score_b) {
+                    $standings[$match->participant_a_id]['won']++;
+                    $standings[$match->participant_a_id]['points'] += 1;
+                    $standings[$match->participant_b_id]['lost']++;
+                    continue;
+                }
+
+                if ($match->score_a < $match->score_b) {
+                    $standings[$match->participant_b_id]['won']++;
+                    $standings[$match->participant_b_id]['points'] += 1;
+                    $standings[$match->participant_a_id]['lost']++;
+                    continue;
+                }
+
+                // إذا كانت تعادل فـ elimination، ما نحتاسبوش draw فـ finished
+                // نخليها skip احتياطياً
                 continue;
             }
-
-            $standings[$match->participant_a_id]['draw']++;
-            $standings[$match->participant_b_id]['draw']++;
-            $standings[$match->participant_a_id]['points'] += $drawPoints;
-            $standings[$match->participant_b_id]['points'] += $drawPoints;
         }
 
         DB::transaction(function () use ($tournament, $standings): void {
@@ -74,8 +99,19 @@ class StandingService
             }
         });
 
-        return $tournament->standings()
-            ->with('participant')
+        $query = $tournament->standings()
+            ->with('participant');
+
+        if ($tournament->type === 'elimination') {
+            return $query
+                ->orderByDesc('won')
+                ->orderBy('lost')
+                ->orderByDesc('played')
+                ->orderBy('participant_id')
+                ->get();
+        }
+
+        return $query
             ->orderByDesc('points')
             ->orderByDesc('won')
             ->orderBy('lost')

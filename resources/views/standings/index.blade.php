@@ -9,6 +9,9 @@
         $isAdmin = $role === 'admin';
         $isPlayer = $role === 'player';
         $canManage = in_array($role, ['organizer', 'admin'], true);
+
+        $isElimination = $tournament->type === 'elimination';
+        $isRoundRobin = $tournament->type === 'round_robin';
     @endphp
 
     <div class="space-y-6">
@@ -29,9 +32,17 @@
 
                     <p class="mt-1 text-sm text-emerald-100">
                         @if($canManage)
-                            Step 4/4: Live ranking based on scored matches.
+                            @if($isElimination)
+                                Elimination bracket summary based on finished matches.
+                            @else
+                                Step 4/4: Live ranking based on scored matches.
+                            @endif
                         @else
-                            Follow the current rankings and your tournament progress.
+                            @if($isElimination)
+                                Follow the knockout progress and participant performance.
+                            @else
+                                Follow the current rankings and your tournament progress.
+                            @endif
                         @endif
                     </p>
                 </div>
@@ -74,7 +85,9 @@
             </x-ui.card>
 
             <x-ui.card>
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Participants</p>
+                <p class="text-xs uppercase tracking-[0.2em] text-slate-400">
+                    {{ $isElimination ? 'Qualified Participants' : 'Participants' }}
+                </p>
                 <h3 class="mt-2 text-xl font-black">{{ $standings->count() }}</h3>
             </x-ui.card>
         </div>
@@ -89,7 +102,10 @@
                     <x-ui.card class="{{ $index === 0 ? 'border-yellow-300 bg-yellow-50' : '' }} {{ $isCurrentUser ? 'ring-2 ring-blue-300' : '' }}">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Rank {{ $index + 1 }}</p>
+                                <p class="text-xs uppercase tracking-[0.2em] text-slate-400">
+                                    {{ $isElimination ? 'Top Performer ' . ($index + 1) : 'Rank ' . ($index + 1) }}
+                                </p>
+
                                 <h4 class="mt-1 text-lg font-black text-slate-900">
                                     {{ $leader->participant?->name }}
                                     @if($isCurrentUser)
@@ -103,9 +119,15 @@
                             </span>
                         </div>
 
-                        <p class="mt-3 text-sm text-slate-600">
-                            {{ $leader->points }} pts • {{ $leader->won }}W / {{ $leader->draw }}D / {{ $leader->lost }}L
-                        </p>
+                        @if($isElimination)
+                            <p class="mt-3 text-sm text-slate-600">
+                                {{ $leader->won }} wins • {{ $leader->lost }} losses • {{ $leader->played }} played
+                            </p>
+                        @else
+                            <p class="mt-3 text-sm text-slate-600">
+                                {{ $leader->points }} pts • {{ $leader->won }}W / {{ $leader->draw }}D / {{ $leader->lost }}L
+                            </p>
+                        @endif
                     </x-ui.card>
                 @endforeach
             </div>
@@ -114,9 +136,17 @@
         <div class="flex flex-wrap items-center justify-between gap-3">
             <p class="text-sm text-slate-500">
                 @if($canManage)
-                    Automatically ranked by points, wins, and losses.
+                    @if($isElimination)
+                        Knockout performance is ranked by wins, losses, and matches played.
+                    @else
+                        Automatically ranked by points, wins, and losses.
+                    @endif
                 @else
-                    Rankings are updated automatically after official match scores are saved.
+                    @if($isElimination)
+                        Rankings update automatically after official knockout match scores are saved.
+                    @else
+                        Rankings are updated automatically after official match scores are saved.
+                    @endif
                 @endif
             </p>
 
@@ -137,10 +167,18 @@
                     <tr>
                         <th class="p-5">Rank</th>
                         <th class="p-5">Participant</th>
-                        <th class="p-5">Points</th>
+
+                        @if($isRoundRobin)
+                            <th class="p-5">Points</th>
+                        @endif
+
                         <th class="p-5">Played</th>
                         <th class="p-5">Won</th>
-                        <th class="p-5">Draw</th>
+
+                        @if($isRoundRobin)
+                            <th class="p-5">Draw</th>
+                        @endif
+
                         <th class="p-5">Lost</th>
                     </tr>
                 </thead>
@@ -165,15 +203,22 @@
                                 @endif
                             </td>
 
-                            <td class="p-5 text-lg font-black text-blue-700">{{ $standing->points }}</td>
+                            @if($isRoundRobin)
+                                <td class="p-5 text-lg font-black text-blue-700">{{ $standing->points }}</td>
+                            @endif
+
                             <td class="p-5">{{ $standing->played }}</td>
                             <td class="p-5 font-semibold text-emerald-600">{{ $standing->won }}</td>
-                            <td class="p-5 font-semibold text-amber-600">{{ $standing->draw }}</td>
+
+                            @if($isRoundRobin)
+                                <td class="p-5 font-semibold text-amber-600">{{ $standing->draw }}</td>
+                            @endif
+
                             <td class="p-5 font-semibold text-red-600">{{ $standing->lost }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="p-10 text-center">
+                            <td colspan="{{ $isRoundRobin ? 7 : 5 }}" class="p-10 text-center">
                                 <p class="text-lg font-semibold text-slate-700">No standings yet</p>
                                 <p class="mt-1 text-sm text-slate-500">
                                     Standings appear after matches are generated and scores are saved.

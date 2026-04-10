@@ -8,7 +8,9 @@
                 <div>
                     <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Organizer Workspace</p>
                     <h2 class="mt-1 text-2xl font-black">Tournament Operations</h2>
-                    <p class="mt-1 text-sm text-blue-100">Use the flow: Tournament -> Participants -> Matches -> Standings.</p>
+                    <p class="mt-1 text-sm text-blue-100">
+                        Use the flow: Tournament → Participants → Matches → Standings.
+                    </p>
                 </div>
 
                 <x-ui.button as="a" :href="route('tournaments.create')" variant="secondary" size="lg">
@@ -19,10 +21,10 @@
         </x-ui.card>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <x-stat-card title="Active Tournaments" value="8" hint="In progress + upcoming" />
-            <x-stat-card title="Registered Teams" value="132" hint="Across all tournaments" tone="slate" />
-            <x-stat-card title="Matches Played" value="96" hint="Updated by referees" tone="emerald" />
-            <x-stat-card title="Pending Scores" value="11" hint="Need validation" tone="amber" />
+            <x-stat-card title="Active Tournaments" :value="$activeTournaments" hint="In progress + upcoming" />
+            <x-stat-card title="Registered Teams" :value="$registeredTeams" hint="Across all tournaments" tone="slate" />
+            <x-stat-card title="Matches Played" :value="$matchesPlayed" hint="Finished matches" tone="emerald" />
+            <x-stat-card title="Pending Scores" :value="$pendingScores" hint="Scheduled + in progress" tone="amber" />
         </div>
 
         <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
@@ -34,35 +36,95 @@
                     <x-ui.button as="a" :href="route('tournaments.index')" variant="secondary" size="lg" class="justify-start">
                         🏆 Tournaments
                     </x-ui.button>
-                    <x-ui.button as="a" :href="route('tournaments.index')" variant="secondary" size="lg" class="justify-start">
+
+                    <x-ui.button
+                        as="a"
+                        :href="$currentTournament ? route('tournaments.participants.index', $currentTournament) : route('tournaments.index')"
+                        variant="secondary"
+                        size="lg"
+                        class="justify-start"
+                    >
                         👥 Participants
                     </x-ui.button>
-                    <x-ui.button as="a" :href="route('tournaments.index')" variant="secondary" size="lg" class="justify-start">
+
+                    <x-ui.button
+                        as="a"
+                        :href="$currentTournament ? route('tournaments.matches.index', $currentTournament) : route('tournaments.index')"
+                        variant="secondary"
+                        size="lg"
+                        class="justify-start"
+                    >
                         ⚔️ Matches
                     </x-ui.button>
-                    <x-ui.button as="a" :href="route('tournaments.index')" variant="secondary" size="lg" class="justify-start">
+
+                    <x-ui.button
+                        as="a"
+                        :href="$currentTournament ? route('tournaments.standings.index', $currentTournament) : route('tournaments.index')"
+                        variant="secondary"
+                        size="lg"
+                        class="justify-start"
+                    >
                         🥇 Standings
                     </x-ui.button>
                 </div>
             </x-ui.card>
 
             <x-ui.card>
-                <h3 class="text-lg font-black text-slate-900">Recent Updates</h3>
+                <h3 class="text-lg font-black text-slate-900">Latest Tournaments</h3>
                 <div class="mt-4 space-y-3">
-                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
-                        <p class="font-semibold text-slate-800">Summer Cup</p>
-                        <p class="text-sm text-slate-500">Participants updated</p>
-                    </div>
-                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
-                        <p class="font-semibold text-slate-800">City League</p>
-                        <p class="text-sm text-slate-500">Scores pending from referees</p>
-                    </div>
-                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
-                        <p class="font-semibold text-slate-800">Regional Open</p>
-                        <p class="text-sm text-slate-500">Standings recalculated</p>
-                    </div>
+                    @forelse($recentTournaments as $tournament)
+                        <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <p class="font-semibold text-slate-800">{{ $tournament->title }}</p>
+                                    <p class="text-sm text-slate-500">{{ $tournament->sport?->name ?? 'No sport' }}</p>
+                                </div>
+
+                                <x-ui.badge variant="info">
+                                    {{ $tournament->status }}
+                                </x-ui.badge>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
+                            No tournaments yet.
+                        </div>
+                    @endforelse
                 </div>
             </x-ui.card>
         </div>
+
+        <x-ui.card padding="p-0">
+            <div class="border-b border-slate-100 px-6 py-5">
+                <h3 class="text-lg font-black text-slate-900">Recent Updates</h3>
+                <p class="text-sm text-slate-500">Latest match and tournament activity.</p>
+            </div>
+
+            <div class="divide-y divide-slate-100">
+                @forelse($recentUpdates as $match)
+                    <div class="flex items-center justify-between px-6 py-4">
+                        <div>
+                            <p class="font-semibold text-slate-800">
+                                {{ $match->tournament?->title ?? 'Tournament' }}
+                            </p>
+                            <p class="text-sm text-slate-500">
+                                {{ $match->participantA?->name ?? '-' }} vs {{ $match->participantB?->name ?? '-' }}
+                                @if(!is_null($match->score_a) || !is_null($match->score_b))
+                                    • {{ $match->score_a ?? 0 }} - {{ $match->score_b ?? 0 }}
+                                @endif
+                            </p>
+                        </div>
+
+                        <x-ui.badge :status="$match->status">
+                            {{ str_replace('_', ' ', $match->status) }}
+                        </x-ui.badge>
+                    </div>
+                @empty
+                    <div class="px-6 py-6 text-sm text-slate-500">
+                        No recent updates available.
+                    </div>
+                @endforelse
+            </div>
+        </x-ui.card>
     </div>
 </x-app-layout>

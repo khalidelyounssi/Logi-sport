@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MatchController;
+use App\Http\Controllers\OrganizerController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\RefereeMatchController;
@@ -25,10 +26,7 @@ Route::patch('/admin/users/{user}/change-role', [AdminController::class, 'change
     // Dashboards
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard'); 
 
-    Route::get('/organizer/dashboard', function () {
-        abort_if(auth()->user()->role !== 'organizer', 403);
-        return view('dashboards.organizer');
-    })->name('organizer.dashboard');
+    Route::get('/organizer/dashboard', [OrganizerController::class, 'dashboard'])->name('organizer.dashboard');
 
     Route::get('/referee/dashboard', function () {
         abort_if(auth()->user()->role !== 'referee', 403);
