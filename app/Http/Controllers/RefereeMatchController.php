@@ -7,6 +7,7 @@ use App\Models\MatchModel;
 use App\Services\MatchScoreService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use RuntimeException;
 
 class RefereeMatchController extends Controller
 {
@@ -40,12 +41,19 @@ class RefereeMatchController extends Controller
         abort_if(auth()->user()->role !== 'referee', 403);
         abort_if($match->referee_id !== auth()->id(), 403);
 
-        $matchScoreService->updateScore(
-            $match,
-            $request->score_a !== null ? (int) $request->score_a : null,
-            $request->score_b !== null ? (int) $request->score_b : null,
-            $request->status
-        );
+        try {
+            $matchScoreService->updateScore(
+                $match,
+                $request->score_a !== null ? (int) $request->score_a : null,
+                $request->score_b !== null ? (int) $request->score_b : null,
+                $request->status,
+                $request->expected_updated_at
+            );
+        } catch (RuntimeException $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
 
         return redirect()
             ->route('referee.matches.index')
