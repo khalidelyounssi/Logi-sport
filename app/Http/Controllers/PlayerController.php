@@ -22,48 +22,48 @@ class PlayerController extends Controller
             $query->where('user_id', $user->id);
         })->with('sport')->latest()->get();
 
-        $recentMatches = MatchModel::with(['tournament', 'participantA', 'participantB'])
+        $allMatches = MatchModel::with(['tournament', 'participantA', 'participantB'])
             ->where(function ($query) use ($participantIds) {
                 $query->whereIn('participant_a_id', $participantIds)
                     ->orWhereIn('participant_b_id', $participantIds);
             })
             ->latest()
-            ->take(5)
             ->get();
 
-        $matchesPlayed = MatchModel::where('status', 'finished')
-            ->where(function ($query) use ($participantIds) {
-                $query->whereIn('participant_a_id', $participantIds)
-                    ->orWhereIn('participant_b_id', $participantIds);
-            })
-            ->count();
+        $recentMatches = $allMatches->take(5);
+
+        $finishedMatches = $allMatches->where('status', 'finished');
+
+        $matchesPlayed = $finishedMatches->count();
 
         $wins = 0;
         $goalsOrPoints = 0;
 
-        foreach ($recentMatches as $match) {
+        foreach ($finishedMatches as $match) {
             $isA = $participantIds->contains($match->participant_a_id);
             $isB = $participantIds->contains($match->participant_b_id);
 
-            if ($match->status === 'finished') {
-                if ($isA) {
-                    $goalsOrPoints += (int) ($match->score_a ?? 0);
-                    if (($match->score_a ?? 0) > ($match->score_b ?? 0)) {
-                        $wins++;
-                    }
-                }
+            if ($isA) {
+                $goalsOrPoints += (int) ($match->score_a ?? 0);
 
-                if ($isB) {
-                    $goalsOrPoints += (int) ($match->score_b ?? 0);
-                    if (($match->score_b ?? 0) > ($match->score_a ?? 0)) {
-                        $wins++;
-                    }
+                if (($match->score_a ?? 0) > ($match->score_b ?? 0)) {
+                    $wins++;
+                }
+            }
+
+            if ($isB) {
+                $goalsOrPoints += (int) ($match->score_b ?? 0);
+
+                if (($match->score_b ?? 0) > ($match->score_a ?? 0)) {
+                    $wins++;
                 }
             }
         }
 
         $bestStanding = Standing::whereIn('participant_id', $participantIds)
             ->orderByDesc('points')
+            ->orderByDesc('won')
+            ->orderBy('lost')
             ->first();
 
         $rank = $bestStanding ? '#' . $this->getRankInTournament($bestStanding) : '—';
