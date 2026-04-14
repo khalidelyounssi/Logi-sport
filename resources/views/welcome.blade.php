@@ -1,105 +1,170 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Logi-Sport') }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logi-Sport | Organisez vos tournois facilement</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased text-slate-900">
-    @php
-        $dashboardRoute = 'login';
+<body class="bg-slate-950 text-slate-100 antialiased">
 
-        if (auth()->check()) {
-            $dashboardRoute = match (auth()->user()->role) {
-                'admin' => 'admin.dashboard',
-                'organizer' => 'organizer.dashboard',
-                'referee' => 'referee.dashboard',
-                default => 'player.dashboard',
-            };
-        }
-    @endphp
+    <!-- Navbar -->
+    <header class="border-b border-slate-800/80 bg-slate-950/90 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="text-xl font-bold tracking-tight">
+                Logi<span class="text-emerald-400">Sport</span>
+            </a>
 
-    <div class="min-h-screen bg-gradient-to-b from-blue-50 via-slate-50 to-white">
-        <header class="border-b border-slate-200 bg-white/80 backdrop-blur">
-            <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-                <a href="{{ url('/') }}" class="inline-flex items-center gap-3">
-                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">⚽</span>
-                    <span class="text-lg font-black text-blue-700">Logi-Sport</span>
+            <nav class="hidden md:flex items-center gap-8 text-sm text-slate-300">
+                <a href="#features" class="hover:text-white transition">Fonctionnalités</a>
+                <a href="#how" class="hover:text-white transition">Comment ça marche</a>
+                <a href="#cta" class="hover:text-white transition">Commencer</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <a href="{{ route('login') }}"
+                   class="px-4 py-2 rounded-xl border border-slate-700 hover:border-slate-500 text-sm transition">
+                    Se connecter
                 </a>
+                <a href="{{ route('register') }}"
+                   class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-semibold text-sm transition">
+                    S’inscrire
+                </a>
+            </div>
+        </div>
+    </header>
 
-                <div class="flex items-center gap-2">
-                    @auth
-                        <a href="{{ route($dashboardRoute) }}" class="inline-flex items-center rounded-2xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="inline-flex items-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-                            Log In
-                        </a>
-                        <a href="{{ route('register') }}" class="inline-flex items-center rounded-2xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
-                            Sign Up
-                        </a>
-                    @endauth
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(16,185,129,0.15),_transparent_45%)]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative">
+            <div class="max-w-3xl">
+                <p class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-emerald-300/90 mb-6">
+                    SaaS Tournament Platform
+                </p>
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">
+                    Organisez vos tournois sportifs
+                    <span class="text-emerald-400">sans complexité</span>
+                </h1>
+                <p class="mt-6 text-slate-300 text-lg leading-relaxed">
+                    Logi-Sport aide les organisateurs à créer des tournois, générer automatiquement les calendriers,
+                    gérer les scores en temps réel et afficher les classements instantanément.
+                </p>
+
+                <div class="mt-10 flex flex-wrap items-center gap-4">
+                    <a href="{{ route('register') }}"
+                       class="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold transition">
+                        Commencer maintenant
+                    </a>
+                    <a href="{{ route('login') }}"
+                       class="px-6 py-3 rounded-2xl border border-slate-700 hover:border-slate-500 font-semibold transition">
+                        Découvrir la plateforme
+                    </a>
                 </div>
             </div>
-        </header>
+        </div>
+    </section>
 
-        <main class="mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 px-4 py-14 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-20">
-            <section class="space-y-6">
-                <p class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-blue-700">
-                    <span>Modern Tournament SaaS</span>
-                </p>
-                <h1 class="text-4xl font-black leading-tight text-slate-900 sm:text-5xl">
-                    Organize Amateur Sports Tournaments End-to-End
-                </h1>
-                <p class="max-w-xl text-base text-slate-600">
-                    Logi-Sport helps organizers create tournaments, register participants, generate match schedules,
-                    collect referee scores, and publish standings in real time.
-                </p>
+    <!-- Features -->
+    <section id="features" class="py-16 md:py-24 border-t border-slate-800/70">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl md:text-4xl font-bold">Fonctionnalités clés</h2>
+            <p class="text-slate-400 mt-3 max-w-2xl">
+                Tout ce qu’il faut pour piloter un tournoi amateur, quel que soit le sport.
+            </p>
 
-                <div class="flex flex-wrap items-center gap-3">
-                    @guest
-                        <a href="{{ route('register') }}" class="inline-flex items-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">
-                            🚀 Discover the Platform
-                        </a>
-                        <a href="{{ route('login') }}" class="inline-flex items-center rounded-2xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-                            Sign In
-                        </a>
-                    @else
-                        <a href="{{ route($dashboardRoute) }}" class="inline-flex items-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">
-                            Go to Dashboard
-                        </a>
-                    @endguest
+            <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <article class="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+                    <h3 class="font-semibold text-lg">Gestion des tournois</h3>
+                    <p class="mt-2 text-slate-400 text-sm">
+                        Créez, modifiez et suivez vos compétitions depuis un tableau de bord unique.
+                    </p>
+                </article>
+
+                <article class="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+                    <h3 class="font-semibold text-lg">Calendrier automatique</h3>
+                    <p class="mt-2 text-slate-400 text-sm">
+                        Générez les matchs automatiquement selon le format du tournoi.
+                    </p>
+                </article>
+
+                <article class="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+                    <h3 class="font-semibold text-lg">Scores en temps réel</h3>
+                    <p class="mt-2 text-slate-400 text-sm">
+                        Les arbitres saisissent les résultats, les classements se mettent à jour rapidement.
+                    </p>
+                </article>
+
+                <article class="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+                    <h3 class="font-semibold text-lg">Classements dynamiques</h3>
+                    <p class="mt-2 text-slate-400 text-sm">
+                        Affichage automatique des points, victoires, défaites et performances.
+                    </p>
+                </article>
+
+                <article class="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+                    <h3 class="font-semibold text-lg">Multi-rôles</h3>
+                    <p class="mt-2 text-slate-400 text-sm">
+                        Organisateur, joueur, arbitre, administrateur: chaque profil a son espace dédié.
+                    </p>
+                </article>
+
+                <article class="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+                    <h3 class="font-semibold text-lg">Statistiques utiles</h3>
+                    <p class="mt-2 text-slate-400 text-sm">
+                        Analysez l’évolution des tournois et les performances des équipes/joueurs.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how" class="py-16 md:py-24 border-t border-slate-800/70">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl md:text-4xl font-bold">Comment ça marche</h2>
+            <div class="mt-10 grid md:grid-cols-3 gap-6">
+                <div class="p-6 rounded-2xl border border-slate-800 bg-slate-900/40">
+                    <p class="text-emerald-400 font-bold text-sm">Étape 1</p>
+                    <h3 class="mt-2 font-semibold">Créer un tournoi</h3>
+                    <p class="mt-2 text-sm text-slate-400">Choisissez le sport, le type et les dates.</p>
                 </div>
-            </section>
-
-            <section class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <p class="text-xs uppercase tracking-[0.2em] text-slate-400">01</p>
-                    <h3 class="mt-2 text-lg font-black text-slate-900">Tournament Management</h3>
-                    <p class="mt-2 text-sm text-slate-600">Create and manage tournaments with clean workflows.</p>
+                <div class="p-6 rounded-2xl border border-slate-800 bg-slate-900/40">
+                    <p class="text-emerald-400 font-bold text-sm">Étape 2</p>
+                    <h3 class="mt-2 font-semibold">Générer les matchs</h3>
+                    <p class="mt-2 text-sm text-slate-400">Le calendrier est généré automatiquement.</p>
                 </div>
-
-                <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <p class="text-xs uppercase tracking-[0.2em] text-slate-400">02</p>
-                    <h3 class="mt-2 text-lg font-black text-slate-900">Automatic Scheduling</h3>
-                    <p class="mt-2 text-sm text-slate-600">Generate round-robin matches instantly.</p>
+                <div class="p-6 rounded-2xl border border-slate-800 bg-slate-900/40">
+                    <p class="text-emerald-400 font-bold text-sm">Étape 3</p>
+                    <h3 class="mt-2 font-semibold">Suivre les résultats</h3>
+                    <p class="mt-2 text-sm text-slate-400">Scores, classements et stats en un seul endroit.</p>
                 </div>
+            </div>
+        </div>
+    </section>
 
-                <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <p class="text-xs uppercase tracking-[0.2em] text-slate-400">03</p>
-                    <h3 class="mt-2 text-lg font-black text-slate-900">Live Score Entry</h3>
-                    <p class="mt-2 text-sm text-slate-600">Referees can update results in real time.</p>
-                </div>
+    <!-- CTA -->
+    <section id="cta" class="py-20 border-t border-slate-800/70">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-extrabold">Prêt à lancer votre prochain tournoi ?</h2>
+            <p class="mt-4 text-slate-400">
+                Rejoignez Logi-Sport et simplifiez toute votre organisation sportive.
+            </p>
+            <div class="mt-8 flex justify-center gap-4 flex-wrap">
+                <a href="{{ route('register') }}"
+                   class="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold transition">
+                    Créer un compte
+                </a>
+                <a href="{{ route('login') }}"
+                   class="px-6 py-3 rounded-2xl border border-slate-700 hover:border-slate-500 font-semibold transition">
+                    Se connecter
+                </a>
+            </div>
+        </div>
+    </section>
 
-                <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <p class="text-xs uppercase tracking-[0.2em] text-slate-400">04</p>
-                    <h3 class="mt-2 text-lg font-black text-slate-900">Standings & Stats</h3>
-                    <p class="mt-2 text-sm text-slate-600">Track rankings and team performance instantly.</p>
-                </div>
-            </section>
-        </main>
-    </div>
+    <footer class="border-t border-slate-800 py-8 text-center text-sm text-slate-500">
+        © {{ date('Y') }} Logi-Sport. Tous droits réservés.
+    </footer>
 </body>
 </html>

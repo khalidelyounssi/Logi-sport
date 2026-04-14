@@ -7,11 +7,11 @@
     $resolved = strtolower($status ?? $variant);
 
     $classes = match ($resolved) {
-        'success', 'finished', 'completed', 'active' => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-        'warning', 'in_progress', 'upcoming', 'live' => 'bg-amber-50 text-amber-700 border border-amber-200',
-        'danger', 'inactive', 'cancelled' => 'bg-red-50 text-red-700 border border-red-200',
-        'info', 'scheduled', 'draft' => 'bg-blue-50 text-blue-700 border border-blue-200',
-        default => 'bg-slate-100 text-slate-700 border border-slate-200',
+        'success', 'finished', 'completed', 'active' => 'bg-emerald-500/15 text-emerald-300 border border-emerald-400/30',
+        'warning', 'in_progress', 'upcoming', 'live' => 'bg-amber-500/15 text-amber-300 border border-amber-400/30',
+        'danger', 'inactive', 'cancelled' => 'bg-rose-500/15 text-rose-300 border border-rose-400/30',
+        'info', 'scheduled', 'draft' => 'bg-cyan-500/15 text-cyan-300 border border-cyan-400/30',
+        default => 'bg-slate-700/40 text-slate-200 border border-slate-600',
     };
 @endphp
 

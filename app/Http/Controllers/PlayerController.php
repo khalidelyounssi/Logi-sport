@@ -13,9 +13,7 @@ class PlayerController extends Controller
     public function dashboard(): View
     {
         abort_if(auth()->user()->role !== 'player', 403);
-
         $user = auth()->user();
-
         $participantIds = Participant::where('user_id', $user->id)->pluck('id');
 
         $myTournaments = Tournament::whereHas('participants', function ($query) use ($user) {

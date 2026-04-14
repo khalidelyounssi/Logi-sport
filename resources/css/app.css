@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-    --ls-primary: #2563eb;
-    --ls-primary-soft: #eff6ff;
-    --ls-bg: #f8fafc;
+    --ls-primary: #10b981;
+    --ls-primary-soft: #064e3b;
+    --ls-bg: #020617;
 }
 
 [x-cloak] {
@@ -15,30 +15,107 @@
 @layer base {
     body {
         background:
-            radial-gradient(1200px 800px at -10% -20%, rgba(37, 99, 235, 0.12), transparent),
-            radial-gradient(1000px 700px at 120% 0%, rgba(14, 165, 233, 0.09), transparent),
+            radial-gradient(1200px 800px at -10% -20%, rgba(16, 185, 129, 0.14), transparent),
+            radial-gradient(1000px 700px at 120% 0%, rgba(6, 182, 212, 0.08), transparent),
             var(--ls-bg);
+        @apply text-slate-100;
     }
 }
 
 @layer components {
     .ui-label {
-        @apply mb-2 block text-sm font-semibold text-slate-700;
+        @apply mb-2 block text-sm font-semibold text-slate-300;
     }
 
     .ui-input {
-        @apply block w-full rounded-2xl border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500;
+        @apply block w-full rounded-2xl border-slate-700 bg-slate-900/80 text-slate-100 placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500;
     }
 
     .ui-select {
-        @apply block w-full rounded-2xl border-slate-200 bg-white text-slate-900 focus:border-blue-500 focus:ring-blue-500;
+        @apply block w-full rounded-2xl border-slate-700 bg-slate-900/80 text-slate-100 focus:border-emerald-500 focus:ring-emerald-500;
     }
 
     .ui-textarea {
-        @apply block w-full rounded-2xl border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500;
+        @apply block w-full rounded-2xl border-slate-700 bg-slate-900/80 text-slate-100 placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500;
     }
 
     .ui-field-error {
-        @apply mt-1 text-sm font-medium text-red-600;
+        @apply mt-1 text-sm font-medium text-rose-400;
     }
+}
+
+/* Scoped contrast fixes for app/guest pages using legacy utility classes */
+.theme-logi .text-slate-900 {
+    color: rgb(241 245 249) !important;
+}
+
+.theme-logi .text-slate-800 {
+    color: rgb(226 232 240) !important;
+}
+
+.theme-logi .text-slate-700,
+.theme-logi .text-gray-700 {
+    color: rgb(203 213 225) !important;
+}
+
+.theme-logi .text-slate-600 {
+    color: rgb(148 163 184) !important;
+}
+
+.theme-logi .text-slate-500,
+.theme-logi .text-slate-400,
+.theme-logi .text-gray-500 {
+    color: rgb(148 163 184) !important;
+}
+
+.theme-logi .text-blue-600 {
+    color: rgb(52 211 153) !important;
+}
+
+.theme-logi .text-blue-700 {
+    color: rgb(16 185 129) !important;
+}
+
+.theme-logi .hover\:text-blue-700:hover {
+    color: rgb(110 231 183) !important;
+}
+
+.theme-logi .bg-white {
+    background-color: rgb(15 23 42 / 0.75) !important;
+}
+
+.theme-logi .bg-slate-50,
+.theme-logi .bg-blue-50 {
+    background-color: rgb(15 23 42 / 0.6) !important;
+}
+
+.theme-logi .bg-blue-600 {
+    background-color: rgb(16 185 129) !important;
+}
+
+.theme-logi .hover\:bg-blue-700:hover {
+    background-color: rgb(5 150 105) !important;
+}
+
+.theme-logi .hover\:bg-blue-50:hover {
+    background-color: rgb(30 41 59 / 0.9) !important;
+}
+
+.theme-logi .border-slate-100,
+.theme-logi .border-slate-200,
+.theme-logi .border-gray-300,
+.theme-logi .border-blue-200 {
+    border-color: rgb(51 65 85 / 0.9) !important;
+}
+
+.theme-logi .border-blue-500 {
+    border-color: rgb(16 185 129 / 0.9) !important;
+}
+
+.theme-logi .focus\:border-blue-500:focus {
+    border-color: rgb(16 185 129) !important;
+}
+
+.theme-logi .focus\:ring-blue-500:focus {
+    --tw-ring-color: rgb(16 185 129) !important;
 }

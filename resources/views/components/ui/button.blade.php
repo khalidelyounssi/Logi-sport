@@ -8,14 +8,14 @@
 
 @php
     $variantClasses = match ($variant) {
-        'primary' => 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
-        'secondary' => 'bg-slate-100 text-slate-700 hover:bg-slate-200',
-        'dark' => 'bg-slate-900 text-white hover:bg-slate-800 shadow-sm',
-        'success' => 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm',
-        'danger' => 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
-        'danger-soft' => 'bg-red-50 text-red-600 hover:bg-red-100',
-        'ghost' => 'bg-transparent text-slate-600 hover:bg-slate-100',
-        default => 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+        'primary' => 'bg-emerald-500 text-slate-900 hover:bg-emerald-400 shadow-sm',
+        'secondary' => 'bg-slate-800 text-slate-100 hover:bg-slate-700 border border-slate-700',
+        'dark' => 'bg-slate-900 text-white hover:bg-slate-800 shadow-sm border border-slate-700',
+        'success' => 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm',
+        'danger' => 'bg-rose-600 text-white hover:bg-rose-500 shadow-sm',
+        'danger-soft' => 'bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/30',
+        'ghost' => 'bg-transparent text-slate-300 hover:bg-slate-800',
+        default => 'bg-emerald-500 text-slate-900 hover:bg-emerald-400 shadow-sm',
     };
 
     $sizeClasses = match ($size) {

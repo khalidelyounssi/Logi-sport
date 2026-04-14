@@ -4,10 +4,10 @@
 
 @php
     $classes = match ($variant) {
-        'error', 'danger' => 'border-red-200 bg-red-50 text-red-700',
-        'warning' => 'border-amber-200 bg-amber-50 text-amber-700',
-        'info' => 'border-blue-200 bg-blue-50 text-blue-700',
-        default => 'border-emerald-200 bg-emerald-50 text-emerald-700',
+        'error', 'danger' => 'border-rose-400/30 bg-rose-500/10 text-rose-300',
+        'warning' => 'border-amber-400/30 bg-amber-500/10 text-amber-300',
+        'info' => 'border-cyan-400/30 bg-cyan-500/10 text-cyan-300',
+        default => 'border-emerald-400/30 bg-emerald-500/10 text-emerald-300',
     };
 @endphp
 

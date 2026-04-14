@@ -22,25 +22,25 @@
 
     $linkClass = static function (bool $active = false, bool $disabled = false) use ($baseLinkClass): string {
         if ($disabled) {
-            return $baseLinkClass . ' pointer-events-none opacity-45 text-slate-400';
+            return $baseLinkClass . ' pointer-events-none opacity-45 text-slate-500';
         }
 
         if ($active) {
-            return $baseLinkClass . ' bg-blue-600 text-white shadow-sm';
+            return $baseLinkClass . ' bg-emerald-500 text-slate-900 shadow-sm';
         }
 
-        return $baseLinkClass . ' text-slate-600 hover:bg-slate-100 hover:text-slate-900';
+        return $baseLinkClass . ' text-slate-300 hover:bg-slate-800 hover:text-white';
     };
 @endphp
 
-<aside class="{{ $mobile ? 'h-full w-full border-r border-slate-200 bg-white' : 'sticky top-0 h-screen border-r border-slate-200 bg-white/95 backdrop-blur' }}">
+<aside class="{{ $mobile ? 'h-full w-full border-r border-slate-800 bg-slate-950' : 'sticky top-0 h-screen border-r border-slate-800 bg-slate-950/95 backdrop-blur' }}">
     <div class="flex h-full flex-col">
-        <div class="border-b border-slate-100 px-6 py-6">
+        <div class="border-b border-slate-800 px-6 py-6">
             <a href="{{ url('/') }}" class="inline-flex items-center gap-3">
-                <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-100 text-lg text-blue-700">⚽</span>
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500/20 text-lg text-emerald-300 border border-emerald-400/30">⚽</span>
                 <span>
                     <span class="block text-sm uppercase tracking-[0.22em] text-slate-400">SaaS Platform</span>
-                    <span class="block text-lg font-black text-blue-700">Logi-Sport</span>
+                    <span class="block text-lg font-black text-emerald-400">Logi-Sport</span>
                 </span>
             </a>
         </div>
@@ -127,13 +127,13 @@
             @endif
         </nav>
 
-        <div class="border-t border-slate-100 px-4 py-5">
-            <div class="mb-4 flex items-center gap-3 rounded-2xl bg-slate-50 p-3">
-                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-sm font-bold text-blue-700">
+        <div class="border-t border-slate-800 px-4 py-5">
+            <div class="mb-4 flex items-center gap-3 rounded-2xl bg-slate-900 p-3 border border-slate-800">
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/20 text-sm font-bold text-emerald-300 border border-emerald-400/30">
                     {{ strtoupper(substr($user->name, 0, 1)) }}
                 </span>
                 <div class="min-w-0">
-                    <p class="truncate text-sm font-semibold text-slate-800">{{ $user->name }}</p>
+                    <p class="truncate text-sm font-semibold text-slate-100">{{ $user->name }}</p>
                     <p class="text-xs uppercase tracking-[0.18em] text-slate-400">{{ $role }}</p>
                 </div>
             </div>
@@ -141,7 +141,7 @@
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit"
-                        class="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">
+                        class="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm font-semibold text-slate-200 transition hover:bg-slate-800">
                     <span>🚪</span>
                     <span>Logout</span>
                 </button>
