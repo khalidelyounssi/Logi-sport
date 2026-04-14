@@ -59,13 +59,16 @@
 }
 
 .theme-logi .text-slate-600 {
-    color: rgb(148 163 184) !important;
+    color: rgb(156 163 175) !important;
 }
 
 .theme-logi .text-slate-500,
-.theme-logi .text-slate-400,
 .theme-logi .text-gray-500 {
-    color: rgb(148 163 184) !important;
+    color: rgb(156 163 175) !important;
+}
+
+.theme-logi .text-slate-400 {
+    color: rgb(203 213 225) !important;
 }
 
 .theme-logi .text-blue-600 {
@@ -118,4 +121,23 @@
 
 .theme-logi .focus\:ring-blue-500:focus {
     --tw-ring-color: rgb(16 185 129) !important;
+}
+
+/* Generic form readability in dark theme */
+.theme-logi input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='range']):not([type='color']):not([type='submit']):not([type='button']):not([type='hidden']),
+.theme-logi select,
+.theme-logi textarea {
+    color: rgb(241 245 249) !important;
+    background-color: rgb(15 23 42 / 0.85) !important;
+    border-color: rgb(51 65 85 / 0.9) !important;
+}
+
+.theme-logi input::placeholder,
+.theme-logi textarea::placeholder {
+    color: rgb(148 163 184) !important;
+}
+
+.theme-logi select option {
+    color: rgb(241 245 249);
+    background-color: rgb(15 23 42);
 }

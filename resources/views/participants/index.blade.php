@@ -2,6 +2,10 @@
     <x-slot name="title">Participants</x-slot>
     <x-slot name="subtitle">{{ $tournament->title }} roster and registration list.</x-slot>
 
+    @php
+        $availableTournaments = $availableTournaments ?? collect();
+    @endphp
+
     <div class="space-y-6">
         @if(session('success'))
             <x-ui.alert>
@@ -13,6 +17,35 @@
             <x-ui.alert variant="error">
                 {{ $errors->first() }}
             </x-ui.alert>
+        @endif
+
+        @if($availableTournaments->isNotEmpty())
+            <x-ui.card>
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Tournament Selector</p>
+                        <p class="mt-1 text-sm text-slate-300">Choisissez le tournoi pour voir ses participants.</p>
+                    </div>
+
+                    <div class="w-full sm:w-auto">
+                        <label for="participants_tournament_switcher" class="sr-only">Select tournament</label>
+                        <select
+                            id="participants_tournament_switcher"
+                            class="ui-select min-w-[280px]"
+                            onchange="if (this.value) window.location.href = this.value"
+                        >
+                            @foreach($availableTournaments as $item)
+                                <option
+                                    value="{{ route('tournaments.participants.index', $item) }}"
+                                    @selected($item->id === $tournament->id)
+                                >
+                                    {{ $item->title }}{{ $item->sport?->name ? ' • '.$item->sport->name : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </x-ui.card>
         @endif
 
         <x-ui.card class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white">

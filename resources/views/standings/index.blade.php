@@ -12,6 +12,7 @@
 
         $isElimination = $tournament->type === 'elimination';
         $isRoundRobin = $tournament->type === 'round_robin';
+        $availableTournaments = $availableTournaments ?? collect();
     @endphp
 
     <div class="space-y-6">
@@ -19,6 +20,35 @@
             <x-ui.alert>
                 {{ session('success') }}
             </x-ui.alert>
+        @endif
+
+        @if($availableTournaments->isNotEmpty())
+            <x-ui.card>
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Tournament Selector</p>
+                        <p class="mt-1 text-sm text-slate-300">Choisissez le tournoi que vous voulez consulter.</p>
+                    </div>
+
+                    <div class="w-full sm:w-auto">
+                        <label for="tournament_switcher" class="sr-only">Select tournament</label>
+                        <select
+                            id="tournament_switcher"
+                            class="ui-select min-w-[280px]"
+                            onchange="if (this.value) window.location.href = this.value"
+                        >
+                            @foreach($availableTournaments as $item)
+                                <option
+                                    value="{{ route('tournaments.standings.index', $item) }}"
+                                    @selected($item->id === $tournament->id)
+                                >
+                                    {{ $item->title }}{{ $item->sport?->name ? ' • '.$item->sport->name : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </x-ui.card>
         @endif
 
         <x-ui.card class="bg-gradient-to-r from-emerald-600 to-blue-700 text-white">

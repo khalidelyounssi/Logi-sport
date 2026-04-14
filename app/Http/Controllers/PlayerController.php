@@ -104,6 +104,72 @@ class PlayerController extends Controller
         return view('player.tournaments', compact('tournaments'));
     }
 
+    public function profile(): View
+    {
+        abort_if(auth()->user()->role !== 'player', 403);
+
+        $user = auth()->user();
+        $participantIds = Participant::where('user_id', $user->id)->pluck('id');
+
+        $matches = MatchModel::with(['tournament', 'participantA', 'participantB'])
+            ->where(function ($query) use ($participantIds) {
+                $query->whereIn('participant_a_id', $participantIds)
+                    ->orWhereIn('participant_b_id', $participantIds);
+            })
+            ->latest()
+            ->get();
+
+        $finishedMatches = $matches->where('status', 'finished');
+        $matchesPlayed = $finishedMatches->count();
+
+        $wins = 0;
+        $goalsOrPoints = 0;
+
+        foreach ($finishedMatches as $match) {
+            $isA = $participantIds->contains($match->participant_a_id);
+            $isB = $participantIds->contains($match->participant_b_id);
+
+            if ($isA) {
+                $goalsOrPoints += (int) ($match->score_a ?? 0);
+
+                if (($match->score_a ?? 0) > ($match->score_b ?? 0)) {
+                    $wins++;
+                }
+            }
+
+            if ($isB) {
+                $goalsOrPoints += (int) ($match->score_b ?? 0);
+
+                if (($match->score_b ?? 0) > ($match->score_a ?? 0)) {
+                    $wins++;
+                }
+            }
+        }
+
+        $myTournamentsCount = Tournament::whereHas('participants', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->count();
+
+        $bestStanding = Standing::whereIn('participant_id', $participantIds)
+            ->orderByDesc('points')
+            ->orderByDesc('won')
+            ->orderBy('lost')
+            ->first();
+
+        $rank = $bestStanding ? '#' . $this->getRankInTournament($bestStanding) : '—';
+        $recentMatches = $matches->take(10);
+
+        return view('player.profile', compact(
+            'user',
+            'myTournamentsCount',
+            'matchesPlayed',
+            'wins',
+            'goalsOrPoints',
+            'rank',
+            'recentMatches'
+        ));
+    }
+
     private function getRankInTournament(Standing $standing): int
     {
         return Standing::where('tournament_id', $standing->tournament_id)

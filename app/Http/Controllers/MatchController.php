@@ -23,7 +23,12 @@ class MatchController extends Controller
             ->latest()
             ->get();
 
-        return view('matches.index', compact('tournament', 'matches'));
+        $availableTournaments = Tournament::with('sport')
+            ->where('organizer_id', auth()->id())
+            ->latest()
+            ->get(['id', 'title', 'sport_id']);
+
+        return view('matches.index', compact('tournament', 'matches', 'availableTournaments'));
     }
 
     public function create(Tournament $tournament): View

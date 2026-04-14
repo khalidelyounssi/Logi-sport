@@ -110,6 +110,12 @@
                     <span>⚽</span>
                     <span>My Matches</span>
                 </a>
+
+                <a href="{{ route('player.profile') }}"
+                   class="{{ $linkClass(request()->routeIs('player.profile')) }}">
+                    <span>👤</span>
+                    <span>My Profile</span>
+                </a>
             @endif
 
             @if($role === 'admin')

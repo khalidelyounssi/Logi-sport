@@ -7,6 +7,19 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased">
+    @php
+        $dashboardRoute = null;
+
+        if (auth()->check()) {
+            $dashboardRoute = match (auth()->user()->role) {
+                'admin' => route('admin.dashboard'),
+                'organizer' => route('organizer.dashboard'),
+                'referee' => route('referee.dashboard'),
+                'player' => route('player.dashboard'),
+                default => url('/'),
+            };
+        }
+    @endphp
 
     <!-- Navbar -->
     <header class="border-b border-slate-800/80 bg-slate-950/90 backdrop-blur sticky top-0 z-50">
@@ -22,14 +35,21 @@
             </nav>
 
             <div class="flex items-center gap-3">
-                <a href="{{ route('login') }}"
-                   class="px-4 py-2 rounded-xl border border-slate-700 hover:border-slate-500 text-sm transition">
-                    Se connecter
-                </a>
-                <a href="{{ route('register') }}"
-                   class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-semibold text-sm transition">
-                    S’inscrire
-                </a>
+                @auth
+                    <a href="{{ $dashboardRoute }}"
+                       class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-semibold text-sm transition">
+                        Dashboard
+                    </a>
+                @else
+                    <a href="{{ route('login') }}"
+                       class="px-4 py-2 rounded-xl border border-slate-700 hover:border-slate-500 text-sm transition">
+                        Se connecter
+                    </a>
+                    <a href="{{ route('register') }}"
+                       class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-semibold text-sm transition">
+                        S’inscrire
+                    </a>
+                @endauth
             </div>
         </div>
     </header>
@@ -52,14 +72,21 @@
                 </p>
 
                 <div class="mt-10 flex flex-wrap items-center gap-4">
-                    <a href="{{ route('register') }}"
-                       class="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold transition">
-                        Commencer maintenant
-                    </a>
-                    <a href="{{ route('login') }}"
-                       class="px-6 py-3 rounded-2xl border border-slate-700 hover:border-slate-500 font-semibold transition">
-                        Découvrir la plateforme
-                    </a>
+                    @auth
+                        <a href="{{ $dashboardRoute }}"
+                           class="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold transition">
+                            Aller au Dashboard
+                        </a>
+                    @else
+                        <a href="{{ route('register') }}"
+                           class="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold transition">
+                            Commencer maintenant
+                        </a>
+                        <a href="{{ route('login') }}"
+                           class="px-6 py-3 rounded-2xl border border-slate-700 hover:border-slate-500 font-semibold transition">
+                            Découvrir la plateforme
+                        </a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -151,14 +178,21 @@
                 Rejoignez Logi-Sport et simplifiez toute votre organisation sportive.
             </p>
             <div class="mt-8 flex justify-center gap-4 flex-wrap">
-                <a href="{{ route('register') }}"
-                   class="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold transition">
-                    Créer un compte
-                </a>
-                <a href="{{ route('login') }}"
-                   class="px-6 py-3 rounded-2xl border border-slate-700 hover:border-slate-500 font-semibold transition">
-                    Se connecter
-                </a>
+                @auth
+                    <a href="{{ $dashboardRoute }}"
+                       class="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold transition">
+                        Ouvrir mon dashboard
+                    </a>
+                @else
+                    <a href="{{ route('register') }}"
+                       class="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold transition">
+                        Créer un compte
+                    </a>
+                    <a href="{{ route('login') }}"
+                       class="px-6 py-3 rounded-2xl border border-slate-700 hover:border-slate-500 font-semibold transition">
+                        Se connecter
+                    </a>
+                @endauth
             </div>
         </div>
     </section>

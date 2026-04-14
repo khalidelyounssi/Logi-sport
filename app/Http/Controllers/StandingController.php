@@ -20,7 +20,11 @@ class StandingController extends Controller
                 ->orderByDesc('points')
                 ->get();
 
-            return view('standings.index', compact('tournament', 'standings'));
+            $availableTournaments = Tournament::with('sport')
+                ->latest()
+                ->get(['id', 'title', 'sport_id']);
+
+            return view('standings.index', compact('tournament', 'standings', 'availableTournaments'));
         }
 
         // ORGANIZER
@@ -32,7 +36,12 @@ class StandingController extends Controller
                 ->orderByDesc('points')
                 ->get();
 
-            return view('standings.index', compact('tournament', 'standings'));
+            $availableTournaments = Tournament::with('sport')
+                ->where('organizer_id', $user->id)
+                ->latest()
+                ->get(['id', 'title', 'sport_id']);
+
+            return view('standings.index', compact('tournament', 'standings', 'availableTournaments'));
         }
 
         // PLAYER
@@ -48,7 +57,14 @@ class StandingController extends Controller
                 ->orderByDesc('points')
                 ->get();
 
-            return view('standings.index', compact('tournament', 'standings'));
+            $availableTournaments = Tournament::with('sport')
+                ->whereHas('participants', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->latest()
+                ->get(['id', 'title', 'sport_id']);
+
+            return view('standings.index', compact('tournament', 'standings', 'availableTournaments'));
         }
 
         abort(403);

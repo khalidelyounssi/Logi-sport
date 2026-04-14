@@ -1,125 +1,96 @@
 <x-app-layout>
     <x-slot name="title">Player Dashboard</x-slot>
-    <x-slot name="subtitle">Follow your tournaments, match results, and performance trends.</x-slot>
+    <x-slot name="subtitle">Vos performances et vos matchs en un coup d’œil.</x-slot>
+
+    @php
+        $logoUrl = static function (?string $logo): ?string {
+            if (! $logo) {
+                return null;
+            }
+
+            if (str_starts_with($logo, 'http://') || str_starts_with($logo, 'https://')) {
+                return $logo;
+            }
+
+            return \Illuminate\Support\Facades\Storage::url($logo);
+        };
+    @endphp
 
     <div class="space-y-6">
-        <x-ui.card class="bg-gradient-to-r from-blue-700 to-indigo-700 text-white">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                    <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Player Space</p>
-                    <h2 class="mt-1 text-2xl font-black">Performance Hub</h2>
-                    <p class="mt-1 text-sm text-blue-100">
-                        Track rankings, recent matches, and your tournament history.
-                    </p>
-                </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <x-ui.card><p class="text-xs text-slate-400 uppercase">Mes tournois</p><p class="text-3xl font-black text-emerald-300 mt-2">{{ $myTournaments->count() }}</p></x-ui.card>
+            <x-ui.card><p class="text-xs text-slate-400 uppercase">Matchs joués</p><p class="text-3xl font-black text-cyan-300 mt-2">{{ $matchesPlayed }}</p></x-ui.card>
+            <x-ui.card><p class="text-xs text-slate-400 uppercase">Victoires</p><p class="text-3xl font-black text-amber-300 mt-2">{{ $wins }}</p></x-ui.card>
+            <x-ui.card><p class="text-xs text-slate-400 uppercase">Rang</p><p class="text-3xl font-black text-slate-100 mt-2">{{ $rank }}</p></x-ui.card>
+        </div>
 
-                <div class="flex flex-wrap gap-2">
-                    <x-ui.button as="a" :href="route('player.tournaments')" variant="secondary" size="lg">
-                        🎮 My Tournaments
-                    </x-ui.button>
-
-                    <x-ui.button as="a" :href="route('player.matches')" variant="secondary" size="lg">
-                        ⚽ My Matches
-                    </x-ui.button>
-                </div>
+        <x-ui.card>
+            <div class="flex flex-wrap gap-3">
+                <x-ui.button as="a" :href="route('player.matches')">Mes matchs</x-ui.button>
+                <x-ui.button as="a" :href="route('player.tournaments')" variant="secondary">Mes tournois</x-ui.button>
             </div>
         </x-ui.card>
 
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <x-stat-card title="Matches Played" :value="$matchesPlayed" hint="Finished matches" />
-            <x-stat-card title="Wins" :value="$wins" hint="Across linked participations" tone="emerald" />
-            <x-stat-card title="Goals / Points" :value="$goalsOrPoints" hint="Overall contribution" tone="blue" />
-            <x-stat-card title="Rank" :value="$rank" hint="Best current standing" tone="amber" />
-        </div>
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div class="xl:col-span-2">
+                <x-ui.card>
+                    <h3 class="text-lg font-black text-slate-100 mb-4">Matchs récents</h3>
+                    @if($recentMatches->isEmpty())
+                        <x-ui.empty-state title="Aucun match" description="Vos matchs apparaîtront ici." />
+                    @else
+                        <div class="space-y-3">
+                            @foreach($recentMatches as $match)
+                                @php
+                                    $teamALogo = $logoUrl($match->participantA?->logo);
+                                    $teamBLogo = $logoUrl($match->participantB?->logo);
+                                    $hasScore = !is_null($match->score_a) && !is_null($match->score_b);
+                                @endphp
 
-        <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
-            <x-ui.card class="xl:col-span-2" padding="p-0">
-                <div class="border-b border-slate-100 px-6 py-5">
-                    <h3 class="text-lg font-black text-slate-900">Recent Matches</h3>
-                    <p class="text-sm text-slate-500">Your latest activity and outcomes.</p>
-                </div>
+                                <div class="rounded-xl bg-slate-800/60 p-4 flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <p class="font-semibold text-slate-100 truncate">{{ $match->tournament?->title ?? 'Tournament' }}</p>
 
-                <div class="divide-y divide-slate-100">
-                    @forelse($recentMatches as $match)
-                        @php
-                            $isA = $match->participantA?->user_id === auth()->id();
-                            $isB = $match->participantB?->user_id === auth()->id();
+                                        <div class="mt-1 flex items-center gap-2 text-sm text-slate-300">
+                                            @if($teamALogo)
+                                                <img src="{{ $teamALogo }}" alt="{{ $match->participantA?->name }}" class="h-6 w-6 rounded-full object-cover border border-slate-700">
+                                            @else
+                                                <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-700 text-[10px] font-bold text-slate-200">
+                                                    {{ strtoupper(substr($match->participantA?->name ?? 'A', 0, 1)) }}
+                                                </span>
+                                            @endif
 
-                            $result = 'Pending';
-                            $variant = 'info';
+                                            <span class="truncate">{{ $match->participantA?->name ?? 'A' }}</span>
+                                            <span class="text-slate-500">vs</span>
+                                            <span class="truncate">{{ $match->participantB?->name ?? 'B' }}</span>
 
-                            if ($match->status === 'finished') {
-                                if (
-                                    ($isA && ($match->score_a ?? 0) > ($match->score_b ?? 0)) ||
-                                    ($isB && ($match->score_b ?? 0) > ($match->score_a ?? 0))
-                                ) {
-                                    $result = 'Win';
-                                    $variant = 'success';
-                                } elseif (($match->score_a ?? 0) === ($match->score_b ?? 0)) {
-                                    $result = 'Draw';
-                                    $variant = 'warning';
-                                } else {
-                                    $result = 'Loss';
-                                    $variant = 'danger';
-                                }
-                            }
-                        @endphp
+                                            @if($teamBLogo)
+                                                <img src="{{ $teamBLogo }}" alt="{{ $match->participantB?->name }}" class="h-6 w-6 rounded-full object-cover border border-slate-700">
+                                            @else
+                                                <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-700 text-[10px] font-bold text-slate-200">
+                                                    {{ strtoupper(substr($match->participantB?->name ?? 'B', 0, 1)) }}
+                                                </span>
+                                            @endif
 
-                        <div class="flex items-center justify-between px-6 py-4">
-                            <div>
-                                <p class="font-semibold text-slate-800">
-                                    {{ $match->tournament?->title ?? 'Tournament' }}
-                                </p>
+                                            <span class="text-slate-500">•</span>
+                                            <span class="font-semibold text-emerald-300">{{ $hasScore ? ($match->score_a.' - '.$match->score_b) : 'No score' }}</span>
+                                        </div>
+                                    </div>
 
-                                <p class="text-sm text-slate-500">
-                                    {{ $match->participantA?->name }} vs {{ $match->participantB?->name }}
-                                    @if(!is_null($match->score_a) || !is_null($match->score_b))
-                                        • {{ $match->score_a ?? 0 }} - {{ $match->score_b ?? 0 }}
-                                    @endif
-                                </p>
-
-                                <p class="mt-1 text-xs text-slate-400">
-                                    {{ $match->match_date?->format('Y-m-d H:i') ?? 'No date' }}
-                                    @if($match->location)
-                                        • {{ $match->location }}
-                                    @endif
-                                </p>
-                            </div>
-
-                            <x-ui.badge variant="{{ $variant }}">
-                                {{ $result }}
-                            </x-ui.badge>
+                                    <x-ui.badge :status="$match->status">{{ strtoupper(str_replace('_', ' ', $match->status)) }}</x-ui.badge>
+                                </div>
+                            @endforeach
                         </div>
-                    @empty
-                        <div class="px-6 py-8 text-sm text-slate-500">
-                            No recent matches found.
-                        </div>
-                    @endforelse
-                </div>
-            </x-ui.card>
+                    @endif
+                </x-ui.card>
+            </div>
 
             <x-ui.card>
-                <h3 class="text-lg font-black text-slate-900">My Tournaments</h3>
-                <p class="mt-1 text-sm text-slate-500">Tournaments where you are registered.</p>
-
-                <div class="mt-4 space-y-3">
-                    @forelse($myTournaments->take(5) as $tournament)
-                        <div class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-                            <div>
-                                <p class="font-semibold text-slate-800">{{ $tournament->title }}</p>
-                                <p class="text-sm text-slate-500">{{ $tournament->sport?->name ?? 'No sport' }}</p>
-                            </div>
-
-                            <x-ui.badge variant="info">
-                                {{ $tournament->status }}
-                            </x-ui.badge>
-                        </div>
-                    @empty
-                        <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
-                            You are not linked to any tournament yet.
-                        </div>
-                    @endforelse
-                </div>
+                <h3 class="text-lg font-black text-slate-100 mb-3">Résumé</h3>
+                <ul class="space-y-2 text-sm text-slate-300">
+                    <li>Points/Buts: <span class="font-semibold">{{ $goalsOrPoints }}</span></li>
+                    <li>Victoires: <span class="font-semibold">{{ $wins }}</span></li>
+                    <li>Classement: <span class="font-semibold">{{ $rank }}</span></li>
+                </ul>
             </x-ui.card>
         </div>
     </div>

@@ -22,7 +22,12 @@ class ParticipantController extends Controller
             ->latest()
             ->get();
 
-        return view('participants.index', compact('tournament', 'participants'));
+        $availableTournaments = Tournament::with('sport')
+            ->where('organizer_id', auth()->id())
+            ->latest()
+            ->get(['id', 'title', 'sport_id']);
+
+        return view('participants.index', compact('tournament', 'participants', 'availableTournaments'));
     }
 
     public function create(Tournament $tournament): View

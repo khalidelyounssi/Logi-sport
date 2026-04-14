@@ -7,6 +7,7 @@ use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\RefereeDashboardController;
 use App\Http\Controllers\RefereeMatchController;
+use App\Http\Controllers\SportController;
 use App\Http\Controllers\StandingController;
 use App\Http\Controllers\TournamentController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
     Route::patch('/admin/users/{user}/toggle-status', [AdminController::class, 'toggleStatus'])->name('admin.users.toggleStatus');
     Route::patch('/admin/users/{user}/change-role', [AdminController::class, 'changeRole'])->name('admin.users.changeRole');
+    Route::resource('sports', SportController::class);
 
     // Dashboards
     Route::get('/organizer/dashboard', [OrganizerController::class, 'dashboard'])->name('organizer.dashboard');
@@ -30,6 +32,7 @@ Route::middleware(['auth'])->group(function () {
     // Player pages
     Route::get('/player/matches', [PlayerController::class, 'matches'])->name('player.matches');
     Route::get('/player/tournaments', [PlayerController::class, 'tournaments'])->name('player.tournaments');
+    Route::get('/player/profile', [PlayerController::class, 'profile'])->name('player.profile');
 
     // Tournament CRUD
     Route::resource('tournaments', TournamentController::class);
