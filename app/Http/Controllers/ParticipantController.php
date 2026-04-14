@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateParticipantRequest;
 use App\Models\Participant;
 use App\Models\Tournament;
 use App\Models\User;
+use App\Services\AppNotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -43,16 +44,23 @@ class ParticipantController extends Controller
         return view('participants.create', compact('tournament', 'players'));
     }
 
-    public function store(StoreParticipantRequest $request, Tournament $tournament): RedirectResponse
+    public function store(StoreParticipantRequest $request, Tournament $tournament, AppNotificationService $notificationService): RedirectResponse
     {
         abort_if(auth()->user()->role !== 'organizer', 403);
         abort_if($tournament->organizer_id !== auth()->id(), 403);
 
-        $tournament->participants()->create([
+        $participant = $tournament->participants()->create([
             'name' => $request->name,
             'type' => $request->type,
             'user_id' => $request->user_id,
         ]);
+
+        if ($participant->user) {
+            $notificationService->sendToUser(
+                $participant->user,
+                'You have been added to tournament: ' . $tournament->title
+            );
+        }
 
         return redirect()
             ->route('tournaments.participants.index', $tournament)
@@ -76,7 +84,8 @@ class ParticipantController extends Controller
     public function update(
         UpdateParticipantRequest $request,
         Tournament $tournament,
-        Participant $participant
+        Participant $participant,
+        AppNotificationService $notificationService
     ): RedirectResponse {
         abort_if(auth()->user()->role !== 'organizer', 403);
         abort_if($tournament->organizer_id !== auth()->id(), 403);
@@ -87,6 +96,13 @@ class ParticipantController extends Controller
             'type' => $request->type,
             'user_id' => $request->user_id,
         ]);
+
+        if ($participant->user) {
+            $notificationService->sendToUser(
+                $participant->user,
+                'Your participant record was updated in tournament: ' . $tournament->title
+            );
+        }
 
         return redirect()
             ->route('tournaments.participants.index', $tournament)

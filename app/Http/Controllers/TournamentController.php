@@ -6,7 +6,9 @@ use App\Http\Requests\StoreTournamentRequest;
 use App\Http\Requests\UpdateTournamentRequest;
 use App\Models\Sport;
 use App\Models\Tournament;
+use App\Models\User;
 use App\Services\MatchGenerationService;
+use App\Services\AppNotificationService;
 use App\Services\StandingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -34,9 +36,9 @@ class TournamentController extends Controller
         return view('tournaments.create', compact('sports'));
     }
 
-    public function store(StoreTournamentRequest $request): RedirectResponse
+    public function store(StoreTournamentRequest $request, AppNotificationService $notificationService): RedirectResponse
     {
-        Tournament::create([
+        $tournament = Tournament::create([
             'title' => $request->title,
             'description' => $request->description,
             'type' => $request->type,
@@ -46,6 +48,12 @@ class TournamentController extends Controller
             'sport_id' => $request->sport_id,
             'organizer_id' => auth()->id(),
         ]);
+
+        User::query()
+            ->where('role', 'admin')
+            ->where('is_active', true)
+            ->get()
+            ->each(fn (User $user) => $notificationService->sendToUser($user, 'New tournament created: ' . $tournament->title));
 
         return redirect()
             ->route('tournaments.index')
@@ -94,6 +102,7 @@ class TournamentController extends Controller
     public function generateMatches(
         Tournament $tournament,
         MatchGenerationService $matchGenerationService,
+        AppNotificationService $notificationService,
         StandingService $standingService
     ): RedirectResponse {
         abort_if(auth()->user()->role !== 'organizer', 403);
@@ -104,6 +113,31 @@ class TournamentController extends Controller
             replaceExisting: true,
             autoAssignReferees: true
         );
+
+        $tournament->load(['matches.participantA.user', 'matches.participantB.user', 'matches.referee']);
+
+        foreach ($tournament->matches as $match) {
+            if ($match->referee) {
+                $notificationService->sendToUser(
+                    $match->referee,
+                    'You have been assigned to match: ' . $match->participantA->name . ' vs ' . $match->participantB->name
+                );
+            }
+
+            if ($match->participantA?->user) {
+                $notificationService->sendToUser(
+                    $match->participantA->user,
+                    'Your team was scheduled for match: ' . $match->participantA->name . ' vs ' . $match->participantB->name
+                );
+            }
+
+            if ($match->participantB?->user) {
+                $notificationService->sendToUser(
+                    $match->participantB->user,
+                    'Your team was scheduled for match: ' . $match->participantA->name . ' vs ' . $match->participantB->name
+                );
+            }
+        }
 
         $standingService->recalculate($tournament);
 

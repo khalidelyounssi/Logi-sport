@@ -1,19 +1,10 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="title">Edit Sport</x-slot>
+    <x-slot name="subtitle">Update sport details</x-slot>
 
-@section('content')
-<div class="min-h-screen bg-slate-950">
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Header -->
-        <div class="mb-8">
-            <a href="{{ route('sports.index') }}" class="text-emerald-400 hover:text-emerald-300 mb-4 inline-flex items-center">
-                ← Back to Sports
-            </a>
-            <h1 class="text-3xl font-bold text-slate-100">Edit Sport</h1>
-            <p class="text-slate-400 mt-2">Update sport details</p>
-        </div>
-
+    <div class="max-w-2xl mx-auto">
         <!-- Form -->
-        <div class="bg-slate-900 rounded-xl border border-slate-800 p-8">
+        <x-ui.card>
             <form action="{{ route('sports.update', $sport) }}" method="POST">
                 @csrf
                 @method('PUT')
@@ -90,7 +81,6 @@
                     </a>
                 </div>
             </form>
-        </div>
+        </x-ui.card>
     </div>
-</div>
-@endsection
+</x-app-layout>

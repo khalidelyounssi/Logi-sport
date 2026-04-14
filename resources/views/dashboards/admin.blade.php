@@ -10,9 +10,26 @@
             <x-ui.card><p class="text-xs text-slate-400 uppercase">Sports</p><p class="text-3xl font-black text-slate-100 mt-2">{{ $totalSports }}</p></x-ui.card>
         </div>
 
+        <!-- Quick Actions -->
         <x-ui.card>
-            <div class="flex flex-wrap gap-3">
-                <x-ui.button as="a" :href="route('admin.users')">Gérer les utilisateurs</x-ui.button>
+            <h3 class="text-lg font-bold text-slate-100 mb-4">Quick Actions</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <a href="{{ route('admin.users') }}" class="p-4 bg-slate-800/50 hover:bg-slate-700 rounded-lg border border-slate-700 hover:border-cyan-500 transition text-center">
+                    <p class="text-cyan-400 font-semibold mb-1">👥</p>
+                    <p class="text-sm text-slate-300">Manage Users</p>
+                </a>
+                <a href="{{ route('sports.index') }}" class="p-4 bg-slate-800/50 hover:bg-slate-700 rounded-lg border border-slate-700 hover:border-emerald-500 transition text-center">
+                    <p class="text-emerald-400 font-semibold mb-1">⚽</p>
+                    <p class="text-sm text-slate-300">Manage Sports</p>
+                </a>
+                <a href="{{ route('tournaments.index') }}" class="p-4 bg-slate-800/50 hover:bg-slate-700 rounded-lg border border-slate-700 hover:border-amber-500 transition text-center">
+                    <p class="text-amber-400 font-semibold mb-1">🏆</p>
+                    <p class="text-sm text-slate-300">View Tournaments</p>
+                </a>
+                <a href="{{ route('admin.users') }}?role=organizer" class="p-4 bg-slate-800/50 hover:bg-slate-700 rounded-lg border border-slate-700 hover:border-violet-500 transition text-center">
+                    <p class="text-violet-400 font-semibold mb-1">📋</p>
+                    <p class="text-sm text-slate-300">Organizers</p>
+                </a>
             </div>
         </x-ui.card>
 

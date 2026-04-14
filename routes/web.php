@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\OrganizerController;
 use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\RefereeDashboardController;
 use App\Http\Controllers\RefereeMatchController;
@@ -23,6 +24,10 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/admin/users/{user}/toggle-status', [AdminController::class, 'toggleStatus'])->name('admin.users.toggleStatus');
     Route::patch('/admin/users/{user}/change-role', [AdminController::class, 'changeRole'])->name('admin.users.changeRole');
     Route::resource('sports', SportController::class);
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
+    Route::patch('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 
     // Dashboards
     Route::get('/organizer/dashboard', [OrganizerController::class, 'dashboard'])->name('organizer.dashboard');

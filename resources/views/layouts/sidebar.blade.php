@@ -17,6 +17,8 @@
 
     $playerTournamentsEnabled = Route::has('player.tournaments');
     $playerMatchesEnabled = Route::has('player.matches');
+    $notificationsEnabled = Route::has('notifications.index');
+    $unreadNotificationsCount = $notificationsEnabled ? $user->notifications()->where('is_read', false)->count() : 0;
 
     $baseLinkClass = 'group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition';
 
@@ -47,6 +49,15 @@
 
         <nav class="flex-1 space-y-2 overflow-y-auto px-4 py-5">
             @if($role === 'organizer')
+                <a href="{{ route('notifications.index') }}"
+                   class="{{ $linkClass(request()->routeIs('notifications.*')) }}">
+                    <span>🔔</span>
+                    <span>Notifications</span>
+                    @if($unreadNotificationsCount > 0)
+                        <span class="ml-auto rounded-full bg-emerald-500 px-2 py-0.5 text-[11px] font-black text-slate-950">{{ $unreadNotificationsCount }}</span>
+                    @endif
+                </a>
+
                 <a href="{{ route('organizer.dashboard') }}"
                    class="{{ $linkClass(request()->routeIs('organizer.dashboard')) }}">
                     <span>📊</span>
@@ -79,6 +90,15 @@
             @endif
 
             @if($role === 'referee')
+                <a href="{{ route('notifications.index') }}"
+                   class="{{ $linkClass(request()->routeIs('notifications.*')) }}">
+                    <span>🔔</span>
+                    <span>Notifications</span>
+                    @if($unreadNotificationsCount > 0)
+                        <span class="ml-auto rounded-full bg-emerald-500 px-2 py-0.5 text-[11px] font-black text-slate-950">{{ $unreadNotificationsCount }}</span>
+                    @endif
+                </a>
+
                 <a href="{{ route('referee.dashboard') }}"
                    class="{{ $linkClass(request()->routeIs('referee.dashboard')) }}">
                     <span>📊</span>
@@ -93,6 +113,15 @@
             @endif
 
             @if($role === 'player')
+                <a href="{{ route('notifications.index') }}"
+                   class="{{ $linkClass(request()->routeIs('notifications.*')) }}">
+                    <span>🔔</span>
+                    <span>Notifications</span>
+                    @if($unreadNotificationsCount > 0)
+                        <span class="ml-auto rounded-full bg-emerald-500 px-2 py-0.5 text-[11px] font-black text-slate-950">{{ $unreadNotificationsCount }}</span>
+                    @endif
+                </a>
+
                 <a href="{{ route('player.dashboard') }}"
                    class="{{ $linkClass(request()->routeIs('player.dashboard')) }}">
                     <span>📊</span>
@@ -119,6 +148,15 @@
             @endif
 
             @if($role === 'admin')
+                <a href="{{ route('notifications.index') }}"
+                   class="{{ $linkClass(request()->routeIs('notifications.*')) }}">
+                    <span>🔔</span>
+                    <span>Notifications</span>
+                    @if($unreadNotificationsCount > 0)
+                        <span class="ml-auto rounded-full bg-emerald-500 px-2 py-0.5 text-[11px] font-black text-slate-950">{{ $unreadNotificationsCount }}</span>
+                    @endif
+                </a>
+
                 <a href="{{ route('admin.dashboard') }}"
                    class="{{ $linkClass(request()->routeIs('admin.dashboard')) }}">
                     <span>📊</span>
@@ -130,6 +168,14 @@
                     <span>👥</span>
                     <span>Users</span>
                 </a>
+
+                <a href="{{ route('sports.index') }}"
+                   class="{{ $linkClass(request()->routeIs('sports.*')) }}">
+                    <span>⚽</span>
+                    <span>Sports</span>
+                </a>
+
+                
             @endif
         </nav>
 

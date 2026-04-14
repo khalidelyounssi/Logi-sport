@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateMatchRequest;
 use App\Models\MatchModel;
 use App\Models\Tournament;
 use App\Models\User;
+use App\Services\AppNotificationService;
 use App\Services\StandingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -48,6 +49,7 @@ class MatchController extends Controller
     public function store(
         StoreMatchRequest $request,
         Tournament $tournament,
+        AppNotificationService $notificationService,
         StandingService $standingService
     ): RedirectResponse {
         abort_if(auth()->user()->role !== 'organizer', 403);
@@ -74,6 +76,27 @@ class MatchController extends Controller
 
         if ($match->status === 'finished') {
             $standingService->recalculate($tournament);
+        }
+
+        if ($match->referee) {
+            $notificationService->sendToUser(
+                $match->referee,
+                'You have been assigned to match: ' . $match->participantA->name . ' vs ' . $match->participantB->name
+            );
+        }
+
+        if ($match->participantA?->user) {
+            $notificationService->sendToUser(
+                $match->participantA->user,
+                'New match scheduled: ' . $match->participantA->name . ' vs ' . $match->participantB->name
+            );
+        }
+
+        if ($match->participantB?->user) {
+            $notificationService->sendToUser(
+                $match->participantB->user,
+                'New match scheduled: ' . $match->participantA->name . ' vs ' . $match->participantB->name
+            );
         }
 
         return redirect()
@@ -111,6 +134,7 @@ class MatchController extends Controller
         UpdateMatchRequest $request,
         Tournament $tournament,
         MatchModel $match,
+        AppNotificationService $notificationService,
         StandingService $standingService
     ): RedirectResponse {
         abort_if(auth()->user()->role !== 'organizer', 403);
@@ -126,6 +150,7 @@ class MatchController extends Controller
         );
 
         $previousStatus = $match->status;
+        $previousRefereeId = $match->referee_id;
 
         $match->update([
             'participant_a_id' => $request->participant_a_id,
@@ -140,6 +165,15 @@ class MatchController extends Controller
 
         if ($match->status === 'finished' || $previousStatus === 'finished') {
             $standingService->recalculate($tournament);
+        }
+
+        $match->load(['participantA.user', 'participantB.user', 'referee']);
+
+        if ($match->referee_id && $match->referee_id !== $previousRefereeId && $match->referee) {
+            $notificationService->sendToUser(
+                $match->referee,
+                'You have been assigned to match: ' . $match->participantA->name . ' vs ' . $match->participantB->name
+            );
         }
 
         return redirect()

@@ -1,14 +1,10 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="title">Sports Management</x-slot>
+    <x-slot name="subtitle">Manage all sports in the system</x-slot>
 
-@section('content')
-<div class="min-h-screen bg-slate-950">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Header -->
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-3xl font-bold text-slate-100">Sports Management</h1>
-                <p class="text-slate-400 mt-2">Manage all sports in the system</p>
-            </div>
+    <div class="space-y-6">
+        <!-- Add Sport Button -->
+        <div class="flex justify-end">
             <a href="{{ route('sports.create') }}" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition">
                 + Add Sport
             </a>
@@ -16,19 +12,19 @@
 
         <!-- Success/Error Messages -->
         @if ($message = Session::get('success'))
-            <div class="mb-6 p-4 bg-emerald-900/30 border border-emerald-500/50 rounded-lg text-emerald-300">
+            <div class="p-4 bg-emerald-900/30 border border-emerald-500/50 rounded-lg text-emerald-300">
                 {{ $message }}
             </div>
         @endif
 
         @if ($message = Session::get('error'))
-            <div class="mb-6 p-4 bg-red-900/30 border border-red-500/50 rounded-lg text-red-300">
+            <div class="p-4 bg-red-900/30 border border-red-500/50 rounded-lg text-red-300">
                 {{ $message }}
             </div>
         @endif
 
         <!-- Sports Table -->
-        <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+        <x-ui.card>
             @if ($sports->count() > 0)
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -80,7 +76,6 @@
                     </a>
                 </div>
             @endif
-        </div>
+        </x-ui.card>
     </div>
-</div>
-@endsection
+</x-app-layout>
