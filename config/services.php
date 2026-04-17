@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'match_feed' => [
+        'base_url' => env('MATCH_API_BASE_URL', 'https://api.football-data.org/v4'),
+        'key' => env('MATCH_API_KEY'),
+        'competition' => env('MATCH_API_COMPETITION', 'PL'),
+        'cache_minutes' => (int) env('MATCH_API_CACHE_MINUTES', 10),
+        'ajax_refresh_seconds' => (int) env('MATCH_AJAX_REFRESH_SECONDS', 30),
+    ],
+
 ];

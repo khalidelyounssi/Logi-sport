@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\OrganizerController;
 use App\Http\Controllers\ParticipantController;
@@ -13,9 +14,8 @@ use App\Http\Controllers\StandingController;
 use App\Http\Controllers\TournamentController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [LandingController::class, 'index']);
+Route::get('/public/matches-feed', [LandingController::class, 'feed'])->name('public.matches.feed');
 
 Route::middleware(['auth'])->group(function () {
     // Admin

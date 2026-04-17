@@ -9,6 +9,9 @@
 <body class="bg-slate-950 text-slate-100 antialiased">
     @php
         $dashboardRoute = null;
+        $publicMatches = $publicMatches ?? [];
+        $initialMatchDay = $initialMatchDay ?? 'next7days';
+        $matchRefreshSeconds = $matchRefreshSeconds ?? 30;
 
         if (auth()->check()) {
             $dashboardRoute = match (auth()->user()->role) {
@@ -88,6 +91,61 @@
                         </a>
                     @endauth
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Public Matches -->
+    <section id="public-matches" class="py-16 md:py-20 border-t border-slate-800/70">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold">Matchs publics</h2>
+                    <p class="text-slate-400 mt-2">Aperçu des matchs récents et à venir pour les visiteurs.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" data-day="next7days" class="js-day-filter rounded-xl border border-emerald-500/40 bg-emerald-500/20 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-emerald-300">Next 7 days</button>
+                    <button type="button" data-day="today" class="js-day-filter rounded-xl border border-emerald-500/40 bg-emerald-500/20 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-emerald-300">Today</button>
+                    <button type="button" data-day="tomorrow" class="js-day-filter rounded-xl border border-slate-700 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-slate-300 hover:border-slate-500">Tomorrow</button>
+                    <span class="text-xs uppercase tracking-[0.18em] text-slate-500">Source: football-data.org</span>
+                </div>
+            </div>
+
+            <p id="matches-last-updated" class="mt-4 text-xs text-slate-500">Updated from server cache.</p>
+
+            <div id="public-matches-grid" class="mt-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                @forelse($publicMatches as $match)
+                    @php
+                        $statusClass = match ($match['status']) {
+                            'IN_PLAY', 'LIVE' => 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+                            'FINISHED' => 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+                            default => 'bg-slate-700/40 text-slate-300 border-slate-600',
+                        };
+                    @endphp
+                    <article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+                        <div class="flex items-center justify-between gap-2">
+                            <p class="text-xs uppercase tracking-[0.18em] text-slate-500 truncate">{{ $match['competition'] }}</p>
+                            <span class="rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.15em] {{ $statusClass }}">{{ $match['status_label'] }}</span>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between gap-3">
+                            <p class="text-sm font-semibold text-slate-100 truncate">{{ $match['home'] }}</p>
+                            <p class="text-xs text-slate-500">vs</p>
+                            <p class="text-sm font-semibold text-slate-100 truncate text-right">{{ $match['away'] }}</p>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between">
+                            @if(!is_null($match['score_home']) && !is_null($match['score_away']))
+                                <p class="text-lg font-black text-emerald-300">{{ $match['score_home'] }} - {{ $match['score_away'] }}</p>
+                            @else
+                                <p class="text-sm text-slate-400">No score yet</p>
+                            @endif
+                            <p class="text-xs text-slate-500">{{ $match['kickoff'] ?? 'TBD' }}</p>
+                        </div>
+                    </article>
+                @empty
+                    <div class="md:col-span-2 xl:col-span-3 rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-slate-400">
+                        Match feed unavailable for now. Please try again shortly.
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -200,5 +258,101 @@
     <footer class="border-t border-slate-800 py-8 text-center text-sm text-slate-500">
         © {{ date('Y') }} Logi-Sport. Tous droits réservés.
     </footer>
+
+    <script>
+        (() => {
+            const feedUrl = "{{ route('public.matches.feed') }}";
+            const refreshMs = Math.max(10, Number("{{ $matchRefreshSeconds }}")) * 1000;
+            const grid = document.getElementById('public-matches-grid');
+            const updatedAt = document.getElementById('matches-last-updated');
+            const dayButtons = document.querySelectorAll('.js-day-filter');
+            let currentDay = "{{ $initialMatchDay }}";
+
+            const statusClass = (status) => {
+                if (status === 'IN_PLAY' || status === 'LIVE') return 'bg-rose-500/20 text-rose-300 border-rose-500/30';
+                if (status === 'FINISHED') return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+                return 'bg-slate-700/40 text-slate-300 border-slate-600';
+            };
+
+            const escapeHtml = (value) => String(value ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+
+            const setActiveDay = (day) => {
+                currentDay = day;
+                dayButtons.forEach((btn) => {
+                    const isActive = btn.dataset.day === day;
+                    btn.className = isActive
+                        ? 'js-day-filter rounded-xl border border-emerald-500/40 bg-emerald-500/20 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-emerald-300'
+                        : 'js-day-filter rounded-xl border border-slate-700 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-slate-300 hover:border-slate-500';
+                });
+            };
+
+            const renderMatches = (matches) => {
+                if (!Array.isArray(matches) || matches.length === 0) {
+                    grid.innerHTML = `
+                        <div class="md:col-span-2 xl:col-span-3 rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-slate-400">
+                            No matches found for this range.
+                        </div>
+                    `;
+                    return;
+                }
+
+                grid.innerHTML = matches.map((match) => {
+                    const score = (match.score_home !== null && match.score_away !== null)
+                        ? `<p class="text-lg font-black text-emerald-300">${escapeHtml(match.score_home)} - ${escapeHtml(match.score_away)}</p>`
+                        : `<p class="text-sm text-slate-400">No score yet</p>`;
+
+                    return `
+                        <article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+                            <div class="flex items-center justify-between gap-2">
+                                <p class="text-xs uppercase tracking-[0.18em] text-slate-500 truncate">${escapeHtml(match.competition)}</p>
+                                <span class="rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.15em] ${statusClass(match.status)}">${escapeHtml(match.status_label)}</span>
+                            </div>
+                            <div class="mt-4 flex items-center justify-between gap-3">
+                                <p class="text-sm font-semibold text-slate-100 truncate">${escapeHtml(match.home)}</p>
+                                <p class="text-xs text-slate-500">vs</p>
+                                <p class="text-sm font-semibold text-slate-100 truncate text-right">${escapeHtml(match.away)}</p>
+                            </div>
+                            <div class="mt-4 flex items-center justify-between">
+                                ${score}
+                                <p class="text-xs text-slate-500">${escapeHtml(match.kickoff ?? 'TBD')}</p>
+                            </div>
+                        </article>
+                    `;
+                }).join('');
+            };
+
+            const fetchMatches = async (day = currentDay) => {
+                try {
+                    const response = await fetch(`${feedUrl}?day=${encodeURIComponent(day)}`, {
+                        headers: { 'Accept': 'application/json' },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Feed request failed');
+                    }
+
+                    const payload = await response.json();
+                    setActiveDay(payload.day || day);
+                    renderMatches(payload.matches || []);
+                    updatedAt.textContent = `Last updated: ${payload.updated_at || ''}`;
+                } catch (error) {
+                    updatedAt.textContent = 'Feed temporarily unavailable.';
+                }
+            };
+
+            dayButtons.forEach((btn) => {
+                btn.addEventListener('click', () => fetchMatches(btn.dataset.day));
+            });
+
+            setActiveDay(currentDay);
+            fetchMatches(currentDay);
+            setInterval(() => fetchMatches(currentDay), refreshMs);
+        })();
+    </script>
 </body>
 </html>
