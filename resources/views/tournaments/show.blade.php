@@ -78,20 +78,20 @@
                 <h3 class="text-lg font-black text-slate-900">Actions</h3>
                 <div class="mt-4 space-y-2">
                     <x-ui.button as="a" :href="route('tournaments.participants.index', $tournament)" variant="secondary" class="w-full justify-start">
-                        👥 Manage Participants
+                        Manage Participants
                     </x-ui.button>
                     <x-ui.button as="a" :href="route('tournaments.matches.index', $tournament)" variant="secondary" class="w-full justify-start">
-                        ⚔️ Manage Matches
+                        Manage Matches
                     </x-ui.button>
                     <x-ui.button as="a" :href="route('tournaments.standings.index', $tournament)" variant="secondary" class="w-full justify-start">
-                        🥇 View Standings
+                        View Standings
                     </x-ui.button>
 
                     @if($tournament->type === 'round_robin')
                         <form action="{{ route('tournaments.generateMatches', $tournament) }}" method="POST" onsubmit="return confirm('Regenerate matches? Existing matches will be replaced.')">
                             @csrf
                             <x-ui.button type="submit" variant="success" class="mt-2 w-full justify-start">
-                                ⚙️ Generate Round Robin
+                                Generate Round Robin
                             </x-ui.button>
                         </form>
                     @endif

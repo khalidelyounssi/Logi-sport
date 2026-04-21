@@ -144,8 +144,8 @@
                                 </h4>
                             </div>
 
-                            <span class="text-2xl">
-                                {{ $index === 0 ? '🏆' : ($index === 1 ? '🥈' : '🥉') }}
+                            <span class="text-xs font-black uppercase tracking-[0.2em] text-slate-500">
+                                Top {{ $index + 1 }}
                             </span>
                         </div>
 
@@ -184,7 +184,6 @@
                 <form action="{{ route('tournaments.standings.recalculate', $tournament) }}" method="POST">
                     @csrf
                     <x-ui.button type="submit" variant="primary">
-                        <span>🔄</span>
                         <span>Recalculate Standings</span>
                     </x-ui.button>
                 </form>

@@ -14,7 +14,7 @@
                 </div>
 
                 <x-ui.button as="a" :href="route('player.dashboard')" variant="secondary" size="lg">
-                    📊 Back to Dashboard
+                    Back to Dashboard
                 </x-ui.button>
             </div>
         </x-ui.card>

@@ -85,8 +85,7 @@ class StandingService
                     continue;
                 }
 
-                // إذا كانت تعادل فـ elimination، ما نحتاسبوش draw فـ finished
-                // نخليها skip احتياطياً
+              
                 continue;
             }
         }

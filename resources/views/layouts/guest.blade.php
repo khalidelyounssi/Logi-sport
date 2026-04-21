@@ -12,7 +12,6 @@
         <section class="hidden items-center justify-center border-r border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-900/80 px-10 py-16 text-white lg:flex">
             <div class="max-w-xl space-y-6">
                 <p class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em]">
-                    <span>⚽</span>
                     <span>Logi-Sport</span>
                 </p>
 
