@@ -26,7 +26,7 @@
 
     <!-- Navbar -->
     <header class="border-b border-slate-800/80 bg-slate-950/90 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <a href="/" class="text-xl font-bold tracking-tight">
                 Logi<span class="text-emerald-400">Sport</span>
             </a>
@@ -60,8 +60,8 @@
     <!-- Hero -->
     <section class="relative overflow-hidden">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(16,185,129,0.15),_transparent_45%)]"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative">
-            <div class="max-w-3xl">
+        <div class="w-full px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative">
+            <div class="w-full">
                 <p class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-emerald-300/90 mb-6">
                     SaaS Tournament Platform
                 </p>
@@ -97,7 +97,7 @@
 
     <!-- Public Matches -->
     <section id="public-matches" class="py-16 md:py-20 border-t border-slate-800/70">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between gap-3 flex-wrap">
                 <div>
                     <h2 class="text-3xl md:text-4xl font-bold">Matchs publics</h2>
@@ -152,7 +152,7 @@
 
     <!-- Features -->
     <section id="features" class="py-16 md:py-24 border-t border-slate-800/70">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl md:text-4xl font-bold">Fonctionnalités clés</h2>
             <p class="text-slate-400 mt-3 max-w-2xl">
                 Tout ce qu’il faut pour piloter un tournoi amateur, quel que soit le sport.
@@ -206,7 +206,7 @@
 
     <!-- How it works -->
     <section id="how" class="py-16 md:py-24 border-t border-slate-800/70">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl md:text-4xl font-bold">Comment ça marche</h2>
             <div class="mt-10 grid md:grid-cols-3 gap-6">
                 <div class="p-6 rounded-2xl border border-slate-800 bg-slate-900/40">
@@ -230,7 +230,7 @@
 
     <!-- CTA -->
     <section id="cta" class="py-20 border-t border-slate-800/70">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="w-full px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-3xl md:text-4xl font-extrabold">Prêt à lancer votre prochain tournoi ?</h2>
             <p class="mt-4 text-slate-400">
                 Rejoignez Logi-Sport et simplifiez toute votre organisation sportive.
