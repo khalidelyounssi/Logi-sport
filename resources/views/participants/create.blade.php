@@ -9,12 +9,12 @@
             </x-ui.alert>
         @endif
 
-        <x-ui.card class="bg-gradient-to-r from-blue-700 to-cyan-600 text-white">
+        <x-ui.card class="bg-[linear-gradient(90deg,#10213d_0%,#11325a_45%,#156b63_100%)] text-white">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Step 2/4</p>
+                    <p class="text-xs uppercase tracking-[0.2em] text-emerald-100/80">Step 2/4</p>
                     <h2 class="mt-1 text-2xl font-black">Participant Registration</h2>
-                    <p class="mt-1 text-sm text-blue-100">Add participants before generating matches.</p>
+                    <p class="mt-1 text-sm text-slate-200">Add participants before generating matches.</p>
                 </div>
 
                 <x-ui.button as="a" :href="route('tournaments.participants.index', $tournament)" variant="secondary">

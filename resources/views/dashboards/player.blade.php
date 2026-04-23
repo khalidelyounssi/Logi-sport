@@ -17,11 +17,11 @@
     @endphp
 
     <div class="space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            <x-ui.card><p class="text-xs text-slate-400 uppercase">Mes tournois</p><p class="text-3xl font-black text-emerald-300 mt-2">{{ $myTournaments->count() }}</p></x-ui.card>
-            <x-ui.card><p class="text-xs text-slate-400 uppercase">Matchs joués</p><p class="text-3xl font-black text-cyan-300 mt-2">{{ $matchesPlayed }}</p></x-ui.card>
-            <x-ui.card><p class="text-xs text-slate-400 uppercase">Victoires</p><p class="text-3xl font-black text-amber-300 mt-2">{{ $wins }}</p></x-ui.card>
-            <x-ui.card><p class="text-xs text-slate-400 uppercase">Rang</p><p class="text-3xl font-black text-slate-100 mt-2">{{ $rank }}</p></x-ui.card>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <x-ui.card><p class="ls-stat-label">Mes tournois</p><p class="ls-stat-value text-emerald-300">{{ $myTournaments->count() }}</p><p class="ls-stat-trend">Active entries</p></x-ui.card>
+            <x-ui.card><p class="ls-stat-label">Matchs joués</p><p class="ls-stat-value text-cyan-300">{{ $matchesPlayed }}</p><p class="ls-stat-trend">Completed games</p></x-ui.card>
+            <x-ui.card><p class="ls-stat-label">Victoires</p><p class="ls-stat-value text-amber-300">{{ $wins }}</p><p class="ls-stat-trend">Best form</p></x-ui.card>
+            <x-ui.card><p class="ls-stat-label">Rang</p><p class="ls-stat-value">{{ $rank }}</p><p class="ls-stat-trend">Current standing</p></x-ui.card>
         </div>
 
         <x-ui.card>
@@ -46,7 +46,7 @@
                                     $hasScore = !is_null($match->score_a) && !is_null($match->score_b);
                                 @endphp
 
-                                <div class="rounded-xl bg-slate-800/60 p-4 flex items-center justify-between gap-3">
+                                <div class="ls-list-item">
                                     <div class="min-w-0">
                                         <p class="font-semibold text-slate-100 truncate">{{ $match->tournament?->title ?? 'Tournament' }}</p>
 
@@ -71,7 +71,7 @@
                                                 </span>
                                             @endif
 
-                                            <span class="text-slate-500">•</span>
+                                            <span class="ls-separator-dot"></span>
                                             <span class="font-semibold text-emerald-300">{{ $hasScore ? ($match->score_a.' - '.$match->score_b) : 'No score' }}</span>
                                         </div>
                                     </div>
@@ -86,7 +86,7 @@
 
             <x-ui.card>
                 <h3 class="text-lg font-black text-slate-100 mb-3">Résumé</h3>
-                <ul class="space-y-2 text-sm text-slate-300">
+                <ul class="space-y-3 text-sm text-slate-300">
                     <li>Points/Buts: <span class="font-semibold">{{ $goalsOrPoints }}</span></li>
                     <li>Victoires: <span class="font-semibold">{{ $wins }}</span></li>
                     <li>Classement: <span class="font-semibold">{{ $rank }}</span></li>

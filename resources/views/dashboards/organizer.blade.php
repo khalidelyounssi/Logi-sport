@@ -17,15 +17,16 @@
     @endphp
 
     <div class="space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            <x-ui.card><p class="text-xs text-slate-400 uppercase">Tournois actifs</p><p class="text-3xl font-black text-emerald-300 mt-2">{{ $activeTournaments }}</p></x-ui.card>
-            <x-ui.card><p class="text-xs text-slate-400 uppercase">Participants</p><p class="text-3xl font-black text-cyan-300 mt-2">{{ $registeredTeams }}</p></x-ui.card>
-            <x-ui.card><p class="text-xs text-slate-400 uppercase">Matchs joués</p><p class="text-3xl font-black text-amber-300 mt-2">{{ $matchesPlayed }}</p></x-ui.card>
-            <x-ui.card><p class="text-xs text-slate-400 uppercase">Scores en attente</p><p class="text-3xl font-black text-slate-100 mt-2">{{ $pendingScores }}</p></x-ui.card>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <x-ui.card><p class="ls-stat-label">Tournois actifs</p><p class="ls-stat-value text-emerald-300">{{ $activeTournaments }}</p><p class="ls-stat-trend">Currently running</p></x-ui.card>
+            <x-ui.card><p class="ls-stat-label">Participants</p><p class="ls-stat-value text-cyan-300">{{ $registeredTeams }}</p><p class="ls-stat-trend">Registered entries</p></x-ui.card>
+            <x-ui.card><p class="ls-stat-label">Matchs joués</p><p class="ls-stat-value text-amber-300">{{ $matchesPlayed }}</p><p class="ls-stat-trend">Results captured</p></x-ui.card>
+            <x-ui.card><p class="ls-stat-label">Scores en attente</p><p class="ls-stat-value">{{ $pendingScores }}</p><p class="ls-stat-trend">Need review</p></x-ui.card>
         </div>
 
         <x-ui.card>
-            <p class="text-sm font-semibold text-slate-200 mb-3">Actions rapides</p>
+            <span class="ls-kicker">Organizer Flow</span>
+            <p class="mt-4 text-2xl font-black text-white">Actions rapides</p>
             <div class="flex flex-wrap gap-3">
                 <x-ui.button as="a" :href="route('tournaments.create')">Créer un tournoi</x-ui.button>
                 <x-ui.button as="a" :href="route('tournaments.index')" variant="secondary">Voir les tournois</x-ui.button>
@@ -48,7 +49,7 @@
                                     $hasScore = !is_null($match->score_a) && !is_null($match->score_b);
                                 @endphp
 
-                                <div class="rounded-xl bg-slate-800/60 p-4 flex items-center justify-between gap-3">
+                                <div class="ls-list-item">
                                     <div class="min-w-0">
                                         <p class="font-semibold text-slate-100 truncate">{{ $match->tournament?->title ?? 'Tournament' }}</p>
 
@@ -73,7 +74,7 @@
                                                 </span>
                                             @endif
 
-                                            <span class="text-slate-500">•</span>
+                                            <span class="ls-separator-dot"></span>
                                             <span class="font-semibold text-emerald-300">
                                                 {{ $hasScore ? ($match->score_a.' - '.$match->score_b) : 'No score' }}
                                             </span>
@@ -95,7 +96,7 @@
                 @else
                     <div class="space-y-3">
                         @foreach($recentTournaments as $tournament)
-                            <div class="rounded-xl bg-slate-800/60 p-4 flex items-center justify-between">
+                            <div class="ls-list-item">
                                 <div>
                                     <p class="font-semibold text-slate-100">{{ $tournament->title }}</p>
                                     <p class="text-sm text-slate-400">{{ $tournament->sport?->name ?? 'Sport' }}</p>

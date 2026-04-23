@@ -1,9 +1,9 @@
 <x-guest-layout>
     <x-ui.card padding="p-8 sm:p-10">
         <div class="mb-8 text-center">
-            <p class="text-xs uppercase tracking-[0.25em] text-slate-400">Email Verification</p>
-            <h1 class="mt-2 text-3xl font-black text-slate-900">Verify Your Email</h1>
-            <p class="mt-2 text-sm text-slate-500">Please confirm your email address before continuing.</p>
+            <p class="ls-kicker">Email Verification</p>
+            <h1 class="mt-4 text-3xl font-black text-white">Verify Your Email</h1>
+            <p class="mt-3 text-sm leading-7 text-slate-400">Please confirm your email address before continuing.</p>
         </div>
 
         @if (session('status') === 'verification-link-sent')

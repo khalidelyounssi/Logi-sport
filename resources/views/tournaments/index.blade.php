@@ -15,36 +15,35 @@
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <x-ui.card>
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-400">This Page</p>
-                <p class="mt-2 text-2xl font-black text-slate-900">{{ $currentPageTournaments->count() }}</p>
-                <p class="mt-1 text-sm text-slate-500">Visible tournaments</p>
+                <p class="ls-stat-label">This Page</p>
+                <p class="ls-stat-value">{{ $currentPageTournaments->count() }}</p>
+                <p class="mt-1 text-sm text-slate-400">Visible tournaments</p>
             </x-ui.card>
 
             <x-ui.card>
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Live</p>
-                <p class="mt-2 text-2xl font-black text-amber-600">{{ $currentPageTournaments->where('status', 'live')->count() }}</p>
-                <p class="mt-1 text-sm text-slate-500">Ongoing tournaments</p>
+                <p class="ls-stat-label">Live</p>
+                <p class="ls-stat-value text-amber-300">{{ $currentPageTournaments->where('status', 'live')->count() }}</p>
+                <p class="mt-1 text-sm text-slate-400">Ongoing tournaments</p>
             </x-ui.card>
 
             <x-ui.card>
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Completed</p>
-                <p class="mt-2 text-2xl font-black text-emerald-600">{{ $currentPageTournaments->where('status', 'completed')->count() }}</p>
-                <p class="mt-1 text-sm text-slate-500">Finished tournaments</p>
+                <p class="ls-stat-label">Completed</p>
+                <p class="ls-stat-value text-emerald-300">{{ $currentPageTournaments->where('status', 'completed')->count() }}</p>
+                <p class="mt-1 text-sm text-slate-400">Finished tournaments</p>
             </x-ui.card>
         </div>
 
         <div class="flex flex-wrap items-center justify-between gap-3">
-            <p class="text-sm text-slate-500">Total: {{ $tournaments->total() }} tournaments</p>
+            <p class="text-sm text-slate-400">Total: {{ $tournaments->total() }} tournaments</p>
 
             <x-ui.button as="a" :href="route('tournaments.create')" variant="primary" size="lg">
-                <span>➕</span>
                 <span>Create Tournament</span>
             </x-ui.button>
         </div>
 
         <x-ui.card padding="p-0">
             <x-ui.table class="rounded-2xl">
-                <thead class="bg-slate-50 text-xs uppercase tracking-[0.18em] text-slate-400">
+                <thead class="bg-slate-950/70 text-xs uppercase tracking-[0.18em] text-slate-500">
                     <tr>
                         <th class="p-5">Tournament</th>
                         <th class="p-5">Sport</th>
@@ -58,9 +57,9 @@
 
                 <tbody>
                     @forelse($tournaments as $tournament)
-                        <tr class="border-t border-slate-100 align-top">
+                        <tr class="border-t border-slate-800/80 align-top">
                             <td class="p-5">
-                                <p class="font-semibold text-slate-900">{{ $tournament->title }}</p>
+                                <p class="font-semibold text-white">{{ $tournament->title }}</p>
                                 <p class="mt-1 text-xs text-slate-500">{{ \Illuminate\Support\Str::limit($tournament->description ?: 'No description', 70) }}</p>
                             </td>
 
@@ -104,7 +103,7 @@
                     @empty
                         <tr>
                             <td colspan="7" class="p-10 text-center">
-                                <p class="text-lg font-semibold text-slate-700">No tournaments yet</p>
+                                <p class="text-lg font-semibold text-slate-200">No tournaments yet</p>
                                 <p class="mt-1 text-sm text-slate-500">Create your first tournament to start the organizer flow.</p>
                                 <x-ui.button as="a" :href="route('tournaments.create')" class="mt-4" variant="primary">Create Tournament</x-ui.button>
                             </td>

@@ -4,11 +4,11 @@
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
         <x-ui.card class="xl:col-span-2" padding="p-0">
-            <div class="border-b border-slate-100 bg-slate-50 px-6 py-5">
+            <div class="border-b border-slate-800/80 bg-slate-950/70 px-6 py-5">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <div>
                         <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Assigned Match</p>
-                        <h2 class="mt-1 text-xl font-black text-slate-900">
+                        <h2 class="mt-1 text-xl font-black text-white">
                             {{ $match->participantA?->name }} vs {{ $match->participantB?->name }}
                         </h2>
                     </div>
@@ -40,27 +40,27 @@
                 @endif
 
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div class="rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm">
+                    <div class="ls-panel-soft p-6 text-center">
                         <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Participant A</p>
-                        <h3 class="mt-2 text-2xl font-black text-slate-900">{{ $match->participantA?->name }}</h3>
+                        <h3 class="mt-2 text-2xl font-black text-white">{{ $match->participantA?->name }}</h3>
 
                         <div class="mt-6 flex items-center justify-center gap-6">
                             <button
                                 type="button"
                                 onclick="decreaseScore('score_a', 'score_a_display')"
-                                class="inline-flex h-12 w-12 items-center justify-center rounded-full border border-blue-200 text-2xl font-bold text-blue-600 transition hover:bg-blue-50"
+                                class="inline-flex h-12 w-12 items-center justify-center rounded-full border border-emerald-400/20 bg-emerald-400/10 text-2xl font-bold text-emerald-300 transition hover:bg-emerald-400/20"
                             >
                                 -
                             </button>
 
-                            <span id="score_a_display" class="text-6xl font-black text-blue-700">
+                            <span id="score_a_display" class="text-6xl font-black text-white">
                                 {{ old('score_a', $match->score_a ?? 0) }}
                             </span>
 
                             <button
                                 type="button"
                                 onclick="increaseScore('score_a', 'score_a_display')"
-                                class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-2xl font-bold text-white transition hover:bg-blue-700"
+                                class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-emerald-400 text-2xl font-bold text-slate-950 transition hover:bg-emerald-300"
                             >
                                 +
                             </button>
@@ -71,27 +71,27 @@
                         @enderror
                     </div>
 
-                    <div class="rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm">
+                    <div class="ls-panel-soft p-6 text-center">
                         <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Participant B</p>
-                        <h3 class="mt-2 text-2xl font-black text-slate-900">{{ $match->participantB?->name }}</h3>
+                        <h3 class="mt-2 text-2xl font-black text-white">{{ $match->participantB?->name }}</h3>
 
                         <div class="mt-6 flex items-center justify-center gap-6">
                             <button
                                 type="button"
                                 onclick="decreaseScore('score_b', 'score_b_display')"
-                                class="inline-flex h-12 w-12 items-center justify-center rounded-full border border-blue-200 text-2xl font-bold text-blue-600 transition hover:bg-blue-50"
+                                class="inline-flex h-12 w-12 items-center justify-center rounded-full border border-emerald-400/20 bg-emerald-400/10 text-2xl font-bold text-emerald-300 transition hover:bg-emerald-400/20"
                             >
                                 -
                             </button>
 
-                            <span id="score_b_display" class="text-6xl font-black text-blue-700">
+                            <span id="score_b_display" class="text-6xl font-black text-white">
                                 {{ old('score_b', $match->score_b ?? 0) }}
                             </span>
 
                             <button
                                 type="button"
                                 onclick="increaseScore('score_b', 'score_b_display')"
-                                class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-2xl font-bold text-white transition hover:bg-blue-700"
+                                class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-emerald-400 text-2xl font-bold text-slate-950 transition hover:bg-emerald-300"
                             >
                                 +
                             </button>
@@ -135,29 +135,29 @@
         </x-ui.card>
 
         <x-ui.card>
-            <h3 class="text-lg font-black text-slate-900">Match Context</h3>
+            <h3 class="text-lg font-black text-white">Match Context</h3>
 
             <div class="mt-4 space-y-4 text-sm">
-                <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                <div class="ls-panel-soft px-4 py-3">
                     <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Tournament</p>
-                    <p class="mt-1 font-semibold text-slate-800">{{ $match->tournament?->title }}</p>
+                    <p class="mt-1 font-semibold text-slate-200">{{ $match->tournament?->title }}</p>
                 </div>
 
-                <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                <div class="ls-panel-soft px-4 py-3">
                     <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Date</p>
-                    <p class="mt-1 font-semibold text-slate-800">
+                    <p class="mt-1 font-semibold text-slate-200">
                         {{ $match->match_date?->format('Y-m-d H:i') ?? 'Not scheduled' }}
                     </p>
                 </div>
 
-                <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                <div class="ls-panel-soft px-4 py-3">
                     <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Location</p>
-                    <p class="mt-1 font-semibold text-slate-800">{{ $match->location ?? 'No location' }}</p>
+                    <p class="mt-1 font-semibold text-slate-200">{{ $match->location ?? 'No location' }}</p>
                 </div>
 
-                <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                <div class="ls-panel-soft px-4 py-3">
                     <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Referee</p>
-                    <p class="mt-1 font-semibold text-slate-800">{{ $match->referee?->name }}</p>
+                    <p class="mt-1 font-semibold text-slate-200">{{ $match->referee?->name }}</p>
                 </div>
             </div>
         </x-ui.card>

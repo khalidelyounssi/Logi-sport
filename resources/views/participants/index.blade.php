@@ -48,34 +48,38 @@
             </x-ui.card>
         @endif
 
-        <x-ui.card class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
+        <div class="ls-flow-banner ls-flow-banner-step-2">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Tournament Flow</p>
-                    <h2 class="mt-1 text-2xl font-black">{{ $tournament->title }}</h2>
-                    <p class="mt-1 text-sm text-blue-100">Step 2/4: Manage participants, then generate matches.</p>
+                    <p class="ls-flow-label">Tournament Flow</p>
+                    <h2 class="ls-flow-title">{{ $tournament->title }}</h2>
+                    <p class="ls-flow-copy">Step 2/4: Manage participants, then generate matches.</p>
                 </div>
 
-                <div class="flex flex-wrap gap-2">
-                    <x-ui.button as="a" :href="route('tournaments.show', $tournament)" variant="secondary" size="sm">Overview</x-ui.button>
-                    <x-ui.button as="a" :href="route('tournaments.matches.index', $tournament)" variant="secondary" size="sm">Matches</x-ui.button>
-                    <x-ui.button as="a" :href="route('tournaments.standings.index', $tournament)" variant="secondary" size="sm">Standings</x-ui.button>
+                <div class="ls-flow-actions">
+                    <a href="{{ route('tournaments.show', $tournament) }}" class="ls-flow-pill">Overview</a>
+                    <a href="{{ route('tournaments.matches.index', $tournament) }}" class="ls-flow-pill">Matches</a>
+                    <a href="{{ route('tournaments.standings.index', $tournament) }}" class="ls-flow-pill">Standings</a>
                 </div>
             </div>
-        </x-ui.card>
+        </div>
 
         <div class="flex flex-wrap items-center justify-between gap-3">
             <p class="text-sm text-slate-500">{{ $participants->count() }} participants registered</p>
 
             <x-ui.button as="a" :href="route('tournaments.participants.create', $tournament)" variant="primary" size="lg">
-                <span>➕</span>
+                <span class="ls-icon-badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                </span>
                 <span>Add Participant</span>
             </x-ui.button>
         </div>
 
         <x-ui.card padding="p-0">
             <x-ui.table>
-                <thead class="bg-slate-50 text-xs uppercase tracking-[0.18em] text-slate-400">
+                <thead class="bg-slate-950/70 text-xs uppercase tracking-[0.18em] text-slate-500">
                     <tr>
                         <th class="p-5">Name</th>
                         <th class="p-5">Type</th>
@@ -86,8 +90,8 @@
 
                 <tbody>
                     @forelse($participants as $participant)
-                        <tr class="border-t border-slate-100">
-                            <td class="p-5 font-semibold text-slate-900">{{ $participant->name }}</td>
+                        <tr class="border-t border-slate-800/80">
+                            <td class="p-5 font-semibold text-white">{{ $participant->name }}</td>
 
                             <td class="p-5">
                                 <x-ui.badge variant="info">
@@ -120,7 +124,7 @@
                     @empty
                         <tr>
                             <td colspan="4" class="p-10 text-center">
-                                <p class="text-lg font-semibold text-slate-700">No participants added yet</p>
+                                <p class="text-lg font-semibold text-slate-200">No participants added yet</p>
                                 <p class="mt-1 text-sm text-slate-500">Add teams or players to continue to the match generation step.</p>
                                 <x-ui.button as="a" :href="route('tournaments.participants.create', $tournament)" class="mt-4" variant="primary">
                                     Add First Participant

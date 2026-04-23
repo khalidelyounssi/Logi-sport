@@ -1,9 +1,9 @@
 <x-guest-layout>
     <x-ui.card padding="p-8 sm:p-10">
         <div class="mb-8 text-center">
-            <p class="text-xs uppercase tracking-[0.25em] text-slate-400">Security Check</p>
-            <h1 class="mt-2 text-3xl font-black text-slate-900">Confirm Password</h1>
-            <p class="mt-2 text-sm text-slate-500">Re-enter your password to continue this protected action.</p>
+            <p class="ls-kicker">Security Check</p>
+            <h1 class="mt-4 text-3xl font-black text-white">Confirm Password</h1>
+            <p class="mt-3 text-sm leading-7 text-slate-400">Re-enter your password to continue this protected action.</p>
         </div>
 
         @if ($errors->any())

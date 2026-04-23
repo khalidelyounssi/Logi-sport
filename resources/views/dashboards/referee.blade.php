@@ -17,11 +17,11 @@
     @endphp
 
     <div class="space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            <x-ui.card><p class="text-xs text-slate-400 uppercase">Assignés</p><p class="text-3xl font-black text-emerald-300 mt-2">{{ $assigned }}</p></x-ui.card>
-            <x-ui.card><p class="text-xs text-slate-400 uppercase">En cours</p><p class="text-3xl font-black text-amber-300 mt-2">{{ $inProgress }}</p></x-ui.card>
-            <x-ui.card><p class="text-xs text-slate-400 uppercase">Terminés</p><p class="text-3xl font-black text-cyan-300 mt-2">{{ $completed }}</p></x-ui.card>
-            <x-ui.card><p class="text-xs text-slate-400 uppercase">En attente</p><p class="text-3xl font-black text-slate-100 mt-2">{{ $pending }}</p></x-ui.card>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <x-ui.card><p class="ls-stat-label">Assignés</p><p class="ls-stat-value text-emerald-300">{{ $assigned }}</p><p class="ls-stat-trend">Owned fixtures</p></x-ui.card>
+            <x-ui.card><p class="ls-stat-label">En cours</p><p class="ls-stat-value text-amber-300">{{ $inProgress }}</p><p class="ls-stat-trend">Live now</p></x-ui.card>
+            <x-ui.card><p class="ls-stat-label">Terminés</p><p class="ls-stat-value text-cyan-300">{{ $completed }}</p><p class="ls-stat-trend">Closed reports</p></x-ui.card>
+            <x-ui.card><p class="ls-stat-label">En attente</p><p class="ls-stat-value">{{ $pending }}</p><p class="ls-stat-trend">Pending action</p></x-ui.card>
         </div>
 
         <x-ui.card>
@@ -43,7 +43,7 @@
                             $hasScore = !is_null($match->score_a) && !is_null($match->score_b);
                         @endphp
 
-                        <div class="rounded-xl bg-slate-800/60 p-4 flex items-center justify-between gap-3">
+                        <div class="ls-list-item">
                             <div class="min-w-0">
                                 <p class="font-semibold text-slate-100 truncate">{{ $match->tournament?->title ?? 'Tournament' }}</p>
 
@@ -68,7 +68,7 @@
                                         </span>
                                     @endif
 
-                                    <span class="text-slate-500">•</span>
+                                    <span class="ls-separator-dot"></span>
                                     <span class="font-semibold text-emerald-300">{{ $hasScore ? ($match->score_a.' - '.$match->score_b) : 'No score' }}</span>
                                 </div>
                             </div>

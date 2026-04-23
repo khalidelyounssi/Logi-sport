@@ -3,9 +3,20 @@
 @tailwind utilities;
 
 :root {
-    --ls-primary: #10b981;
-    --ls-primary-soft: #064e3b;
-    --ls-bg: #020617;
+    --ls-primary: #35e0a1;
+    --ls-primary-strong: #16c784;
+    --ls-primary-soft: rgba(53, 224, 161, 0.18);
+    --ls-accent: #5db8ff;
+    --ls-surface: rgba(12, 23, 44, 0.82);
+    --ls-surface-strong: rgba(7, 15, 31, 0.94);
+    --ls-surface-soft: rgba(19, 32, 58, 0.76);
+    --ls-border: rgba(130, 150, 190, 0.16);
+    --ls-border-strong: rgba(93, 184, 255, 0.22);
+    --ls-text: #edf4ff;
+    --ls-muted: #8ea5c6;
+    --ls-bg: #06111f;
+    --ls-bg-2: #08172b;
+    --ls-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
 }
 
 [x-cloak] {
@@ -13,34 +24,301 @@
 }
 
 @layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
     body {
         background:
-            radial-gradient(1200px 800px at -10% -20%, rgba(16, 185, 129, 0.14), transparent),
-            radial-gradient(1000px 700px at 120% 0%, rgba(6, 182, 212, 0.08), transparent),
+            radial-gradient(1100px 720px at -8% -10%, rgba(53, 224, 161, 0.18), transparent),
+            radial-gradient(900px 640px at 110% 0%, rgba(93, 184, 255, 0.12), transparent),
+            linear-gradient(180deg, rgba(12, 24, 46, 0.82), rgba(4, 10, 22, 0.96)),
             var(--ls-bg);
-        @apply text-slate-100;
+        color: var(--ls-text);
+        min-height: 100vh;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+            linear-gradient(rgba(125, 145, 180, 0.045) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(125, 145, 180, 0.045) 1px, transparent 1px);
+        background-size: 64px 64px;
+        mask-image: radial-gradient(circle at center, black 35%, transparent 90%);
+        opacity: 0.5;
+    }
+
+    ::selection {
+        background: rgba(53, 224, 161, 0.28);
+        color: white;
     }
 }
 
 @layer components {
+    .ls-shell {
+        @apply relative min-h-screen overflow-hidden;
+    }
+
+    .ls-shell::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(560px 320px at 82% 10%, rgba(53, 224, 161, 0.08), transparent),
+            radial-gradient(460px 280px at 16% 78%, rgba(93, 184, 255, 0.08), transparent);
+        opacity: 0.95;
+    }
+
+    .ls-panel {
+        background: linear-gradient(180deg, rgba(15, 27, 49, 0.88), rgba(9, 18, 36, 0.94));
+        border: 1px solid var(--ls-border);
+        box-shadow: var(--ls-shadow);
+        @apply relative overflow-hidden rounded-[28px] backdrop-blur-xl;
+    }
+
+    .ls-panel::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 30%, transparent 70%, rgba(53, 224, 161, 0.06));
+    }
+
+    .ls-panel-soft {
+        background: linear-gradient(180deg, rgba(17, 31, 57, 0.72), rgba(10, 18, 34, 0.78));
+        border: 1px solid rgba(130, 150, 190, 0.12);
+        @apply rounded-[24px] backdrop-blur-lg;
+    }
+
+    .ls-topbar {
+        background: linear-gradient(180deg, rgba(8, 17, 33, 0.94), rgba(8, 17, 33, 0.72));
+        border-bottom: 1px solid rgba(130, 150, 190, 0.12);
+        @apply backdrop-blur-xl;
+    }
+
+    .ls-sidebar {
+        background: linear-gradient(180deg, rgba(8, 17, 33, 0.98), rgba(10, 22, 42, 0.94));
+        border-right: 1px solid rgba(130, 150, 190, 0.12);
+        @apply backdrop-blur-xl;
+    }
+
+    .ls-nav-link {
+        @apply flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-slate-300 transition duration-200;
+    }
+
+    .ls-nav-link-active {
+        background: linear-gradient(90deg, rgba(53, 224, 161, 0.2), rgba(53, 224, 161, 0.08));
+        border: 1px solid rgba(53, 224, 161, 0.22);
+        color: white;
+        box-shadow: inset 0 0 0 1px rgba(53, 224, 161, 0.05), 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .ls-nav-link-inactive {
+        border: 1px solid transparent;
+    }
+
+    .ls-nav-link-inactive:hover {
+        background: rgba(19, 32, 58, 0.68);
+        border-color: rgba(130, 150, 190, 0.12);
+        color: white;
+    }
+
+    .ls-stat-card {
+        @apply ls-panel p-5;
+    }
+
+    .ls-stat-label {
+        color: var(--ls-muted);
+        @apply text-[11px] font-semibold uppercase tracking-[0.24em];
+    }
+
+    .ls-stat-value {
+        @apply mt-4 text-3xl font-black tracking-tight text-white;
+    }
+
+    .ls-stat-trend {
+        @apply mt-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em];
+        background: rgba(53, 224, 161, 0.12);
+        color: #9af4cf;
+    }
+
+    .ls-hero {
+        @apply ls-panel grid gap-8 p-6 lg:grid-cols-[minmax(0,1.35fr)_320px] lg:p-8;
+    }
+
+    .ls-hero-banner {
+        background:
+            linear-gradient(120deg, rgba(7, 18, 37, 0.28), rgba(7, 18, 37, 0.82)),
+            radial-gradient(circle at 80% 12%, rgba(255, 255, 255, 0.18), transparent 24%),
+            radial-gradient(circle at 18% 0%, rgba(53, 224, 161, 0.14), transparent 38%),
+            linear-gradient(135deg, rgba(8, 25, 46, 0.86), rgba(15, 37, 64, 0.44));
+        border: 1px solid rgba(130, 150, 190, 0.14);
+        @apply relative overflow-hidden rounded-[26px] p-6 lg:p-8;
+    }
+
+    .ls-hero-banner::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at 74% 24%, rgba(255, 255, 255, 0.34), transparent 10%),
+            radial-gradient(circle at 78% 26%, rgba(255, 255, 255, 0.16), transparent 18%);
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    .ls-section-title {
+        @apply text-xl font-black tracking-tight text-white;
+    }
+
     .ui-label {
-        @apply mb-2 block text-sm font-semibold text-slate-300;
+        color: #d8e4f5;
+        @apply mb-2 block text-xs font-semibold uppercase tracking-[0.22em];
     }
 
-    .ui-input {
-        @apply block w-full rounded-2xl border-slate-700 bg-slate-900/80 text-slate-100 placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500;
-    }
-
+    .ui-input,
     .ui-select {
-        @apply block w-full rounded-2xl border-slate-700 bg-slate-900/80 text-slate-100 focus:border-emerald-500 focus:ring-emerald-500;
+        @apply block w-full rounded-2xl border px-4 py-3 text-sm text-slate-100 transition;
+        border-color: rgba(130, 150, 190, 0.16);
+        background: rgba(8, 17, 33, 0.84);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     .ui-textarea {
-        @apply block w-full rounded-2xl border-slate-700 bg-slate-900/80 text-slate-100 placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500;
+        @apply block w-full rounded-2xl border px-4 py-3 text-sm text-slate-100 transition;
+        border-color: rgba(130, 150, 190, 0.16);
+        background: rgba(8, 17, 33, 0.84);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    .ui-input:focus,
+    .ui-select:focus,
+    .ui-textarea:focus {
+        border-color: rgba(53, 224, 161, 0.55);
+        --tw-ring-color: rgba(53, 224, 161, 0.28);
+        box-shadow: 0 0 0 4px rgba(53, 224, 161, 0.08), 0 0 0 1px rgba(53, 224, 161, 0.24);
     }
 
     .ui-field-error {
         @apply mt-1 text-sm font-medium text-rose-400;
+    }
+
+    .ls-page-grid {
+        @apply grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_360px];
+    }
+
+    .ls-list-item {
+        @apply ls-panel-soft flex items-center justify-between gap-4 p-4;
+    }
+
+    .ls-kicker {
+        @apply inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em];
+        border-color: rgba(53, 224, 161, 0.24);
+        background: rgba(53, 224, 161, 0.1);
+        color: #9af4cf;
+    }
+
+    .ls-separator-dot {
+        @apply inline-block h-1.5 w-1.5 rounded-full;
+        background: linear-gradient(135deg, rgba(53, 224, 161, 0.95), rgba(93, 184, 255, 0.9));
+        box-shadow: 0 0 12px rgba(53, 224, 161, 0.45);
+    }
+
+    .ls-inline-link {
+        color: #6ee7b7;
+        @apply font-semibold transition hover:text-emerald-200;
+    }
+
+    .ls-icon-badge {
+        @apply inline-flex h-8 w-8 items-center justify-center rounded-xl border border-emerald-400/20 bg-emerald-400/10 text-emerald-300;
+        box-shadow: 0 10px 24px rgba(53, 224, 161, 0.14);
+    }
+
+    .ls-icon-badge svg {
+        @apply h-4 w-4;
+    }
+
+    .ls-flow-banner {
+        @apply relative overflow-hidden rounded-[34px] p-6 lg:p-8;
+        border: 1px solid rgba(135, 167, 227, 0.18);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    }
+
+    .ls-flow-banner::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(circle at 18% 50%, rgba(255, 255, 255, 0.06), transparent 24%),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent 24%, transparent 76%, rgba(255, 255, 255, 0.02));
+    }
+
+    .ls-flow-banner-step-2 {
+        background: linear-gradient(90deg, #3569ea 0%, #288ee0 48%, #18a8c8 100%);
+    }
+
+    .ls-flow-banner-step-3 {
+        background: linear-gradient(90deg, #18213d 0%, #1b3c79 52%, #1e5cc8 100%);
+    }
+
+    .ls-flow-banner-step-4 {
+        background: linear-gradient(90deg, #1f9f84 0%, #1f8ca2 45%, #2a56d3 100%);
+    }
+
+    .ls-flow-banner-overview {
+        background: linear-gradient(90deg, #2e66e7 0%, #2b84d8 48%, #1da7cb 100%);
+    }
+
+    .ls-flow-label {
+        @apply text-sm font-medium uppercase tracking-[0.34em] text-white/75;
+    }
+
+    .ls-flow-title {
+        @apply mt-2 text-3xl font-black tracking-tight text-white md:text-4xl;
+    }
+
+    .ls-flow-copy {
+        @apply mt-2 text-base text-white/80 md:text-[1.05rem];
+    }
+
+    .ls-flow-actions {
+        @apply flex flex-wrap gap-3;
+    }
+
+    .ls-flow-pill {
+        @apply inline-flex items-center justify-center rounded-2xl border px-5 py-3 text-base font-bold text-white transition;
+        background: rgba(18, 34, 58, 0.82);
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .ls-flow-pill:hover {
+        background: rgba(21, 40, 68, 0.94);
+        border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .ls-score-chip {
+        @apply inline-flex min-h-[106px] min-w-[154px] flex-col items-center justify-center rounded-[30px] border px-6 py-5 text-center;
+        background: linear-gradient(180deg, rgba(11, 20, 41, 0.98), rgba(8, 17, 33, 0.96));
+        border-color: rgba(120, 150, 210, 0.16);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 18px 38px rgba(0, 0, 0, 0.28);
+    }
+
+    .ls-score-chip-label {
+        @apply text-[10px] font-medium uppercase tracking-[0.34em] text-slate-400;
+    }
+
+    .ls-score-chip-value {
+        @apply mt-3 text-4xl font-black tracking-[0.28em] text-emerald-300;
+    }
+
+    .ls-score-chip-meta {
+        @apply mt-2 text-xs uppercase tracking-[0.18em] text-slate-500;
     }
 }
 
@@ -84,7 +362,7 @@
 }
 
 .theme-logi .bg-white {
-    background-color: rgb(15 23 42 / 0.75) !important;
+    background-color: rgba(15, 27, 49, 0.75) !important;
 }
 
 .theme-logi .bg-slate-50,
@@ -128,8 +406,8 @@
 .theme-logi select,
 .theme-logi textarea {
     color: rgb(241 245 249) !important;
-    background-color: rgb(15 23 42 / 0.85) !important;
-    border-color: rgb(51 65 85 / 0.9) !important;
+    background-color: rgba(8, 17, 33, 0.88) !important;
+    border-color: rgba(130, 150, 190, 0.18) !important;
 }
 
 .theme-logi input::placeholder,

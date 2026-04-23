@@ -1,9 +1,9 @@
 <x-guest-layout>
     <x-ui.card padding="p-8 sm:p-10">
         <div class="mb-8 text-center">
-            <p class="text-xs uppercase tracking-[0.25em] text-slate-400">Account Recovery</p>
-            <h1 class="mt-2 text-3xl font-black text-slate-900">Reset Password</h1>
-            <p class="mt-2 text-sm text-slate-500">Enter your email and we will send you a reset link.</p>
+            <p class="ls-kicker">Account Recovery</p>
+            <h1 class="mt-4 text-3xl font-black text-white">Reset Password</h1>
+            <p class="mt-3 text-sm leading-7 text-slate-400">Enter your email and we will send you a reset link.</p>
         </div>
 
         @if (session('status'))
@@ -31,8 +31,8 @@
             </x-ui.button>
         </form>
 
-        <p class="mt-6 text-center text-sm text-slate-500">
-            <a href="{{ route('login') }}" class="font-semibold text-blue-600 hover:text-blue-700">Back to login</a>
+        <p class="mt-6 text-center text-sm text-slate-400">
+            <a href="{{ route('login') }}" class="ls-inline-link">Back to login</a>
         </p>
     </x-ui.card>
 </x-guest-layout>

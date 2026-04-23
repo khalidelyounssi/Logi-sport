@@ -8,14 +8,14 @@
 
 @php
     $variantClasses = match ($variant) {
-        'primary' => 'bg-emerald-500 text-slate-900 hover:bg-emerald-400 shadow-sm',
-        'secondary' => 'bg-slate-800 text-slate-100 hover:bg-slate-700 border border-slate-700',
-        'dark' => 'bg-slate-900 text-white hover:bg-slate-800 shadow-sm border border-slate-700',
-        'success' => 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm',
-        'danger' => 'bg-rose-600 text-white hover:bg-rose-500 shadow-sm',
-        'danger-soft' => 'bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/30',
-        'ghost' => 'bg-transparent text-slate-300 hover:bg-slate-800',
-        default => 'bg-emerald-500 text-slate-900 hover:bg-emerald-400 shadow-sm',
+        'primary' => 'border border-emerald-300/20 bg-emerald-400 text-slate-950 shadow-[0_18px_40px_rgba(53,224,161,0.25)] hover:bg-emerald-300',
+        'secondary' => 'border border-slate-700/80 bg-slate-900/80 text-slate-100 hover:border-slate-500 hover:bg-slate-800/90',
+        'dark' => 'border border-slate-700/80 bg-slate-950/90 text-white hover:bg-slate-900',
+        'success' => 'border border-emerald-400/30 bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30',
+        'danger' => 'border border-rose-400/30 bg-rose-500 text-white hover:bg-rose-400',
+        'danger-soft' => 'border border-rose-400/25 bg-rose-500/10 text-rose-200 hover:bg-rose-500/20',
+        'ghost' => 'border border-transparent bg-transparent text-slate-300 hover:border-slate-700/70 hover:bg-slate-900/70 hover:text-white',
+        default => 'border border-emerald-300/20 bg-emerald-400 text-slate-950 shadow-[0_18px_40px_rgba(53,224,161,0.25)] hover:bg-emerald-300',
     };
 
     $sizeClasses = match ($size) {
@@ -24,7 +24,7 @@
         default => 'px-4 py-2.5 text-sm rounded-2xl',
     };
 
-    $classes = "inline-flex items-center justify-center gap-2 font-semibold transition {$variantClasses} {$sizeClasses}";
+    $classes = "inline-flex items-center justify-center gap-2 font-semibold transition duration-200 {$variantClasses} {$sizeClasses}";
 @endphp
 
 @if($as === 'a')

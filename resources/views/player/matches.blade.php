@@ -17,21 +17,19 @@
     @endphp
 
     <div class="space-y-6">
-        <x-ui.card class="bg-gradient-to-r from-blue-700 to-indigo-700 text-white">
+        <div class="ls-flow-banner ls-flow-banner-step-3">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Player Matches</p>
-                    <h2 class="mt-1 text-2xl font-black">My Match History</h2>
-                    <p class="mt-1 text-sm text-blue-100">
+                    <p class="ls-flow-label">Player Matches</p>
+                    <h2 class="ls-flow-title">My Match History</h2>
+                    <p class="ls-flow-copy">
                         Review your fixtures, scores, referees, and match status.
                     </p>
                 </div>
 
-                <x-ui.button as="a" :href="route('player.dashboard')" variant="secondary" size="lg">
-                    Back to Dashboard
-                </x-ui.button>
+                <a href="{{ route('player.dashboard') }}" class="ls-flow-pill">Back to Dashboard</a>
             </div>
-        </x-ui.card>
+        </div>
 
         <x-ui.card>
             <h3 class="text-lg font-black text-slate-100 mb-4">All My Matches</h3>
@@ -78,15 +76,26 @@
                             <p class="font-semibold text-slate-100 truncate">{{ $match->participantA?->name ?? 'Team A' }}</p>
                         </div>
 
-                        <div class="text-center shrink-0">
+                        <div class="shrink-0">
                             @if($hasScore)
-                                <p class="text-2xl font-black text-emerald-300">{{ $match->score_a }} - {{ $match->score_b }}</p>
+                                <div class="ls-score-chip">
+                                    <p class="ls-score-chip-label">Score</p>
+                                    <p class="ls-score-chip-value">{{ $match->score_a }}:{{ $match->score_b }}</p>
+                                    <p class="ls-score-chip-meta">{{ $match->match_date?->format('d M • H:i') ?? 'Date TBD' }}</p>
+                                </div>
                             @elseif($match->status === 'finished')
-                                <p class="text-sm font-bold text-amber-300">No score</p>
+                                <div class="ls-score-chip">
+                                    <p class="ls-score-chip-label">Score</p>
+                                    <p class="ls-score-chip-value">--:--</p>
+                                    <p class="ls-score-chip-meta">No score</p>
+                                </div>
                             @else
-                                <p class="text-xl font-black text-slate-300">VS</p>
+                                <div class="ls-score-chip">
+                                    <p class="ls-score-chip-label">Score</p>
+                                    <p class="ls-score-chip-value">--:--</p>
+                                    <p class="ls-score-chip-meta">{{ $match->match_date?->format('d M • H:i') ?? 'Date TBD' }}</p>
+                                </div>
                             @endif
-                            <p class="text-xs text-slate-500 mt-1">{{ $match->match_date?->format('d M • H:i') ?? 'Date TBD' }}</p>
                         </div>
 
                         <div class="flex items-center gap-3 min-w-0 flex-row-reverse">
@@ -102,7 +111,11 @@
                     </div>
 
                     <div class="mt-3 pt-3 border-t border-slate-800 flex items-center justify-between text-sm gap-2 flex-wrap">
-                        <p class="text-slate-400">{{ $match->tournament?->title ?? 'Tournament' }} • {{ $match->location ?? 'No location' }}</p>
+                        <p class="flex items-center gap-2 text-slate-400">
+                            <span>{{ $match->tournament?->title ?? 'Tournament' }}</span>
+                            <span class="ls-separator-dot"></span>
+                            <span>{{ $match->location ?? 'No location' }}</span>
+                        </p>
                         <div class="flex items-center gap-2">
                             <x-ui.badge variant="{{ $variant }}">{{ $result }}</x-ui.badge>
                             <x-ui.badge :status="$match->status">{{ str_replace('_', ' ', $match->status) }}</x-ui.badge>

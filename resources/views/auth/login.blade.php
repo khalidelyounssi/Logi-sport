@@ -1,9 +1,9 @@
 <x-guest-layout>
     <x-ui.card padding="p-8 sm:p-10">
         <div class="mb-8 text-center">
-            <p class="text-xs uppercase tracking-[0.25em] text-slate-400">Logi-Sport</p>
-            <h1 class="mt-2 text-3xl font-black text-slate-900">Welcome Back</h1>
-            <p class="mt-2 text-sm text-slate-500">Sign in to manage tournaments and live match data.</p>
+            <p class="ls-kicker">Organizer Access</p>
+            <h1 class="mt-4 text-3xl font-black text-white">Welcome Back</h1>
+            <p class="mt-3 text-sm leading-7 text-slate-400">Sign in to access your command center, manage tournaments, and monitor match activity live.</p>
         </div>
 
         @if(session('status'))
@@ -32,13 +32,13 @@
             </div>
 
             <div class="flex items-center justify-between gap-3">
-                <label class="inline-flex items-center gap-2 text-sm text-slate-600">
-                    <input type="checkbox" name="remember" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                <label class="inline-flex items-center gap-2 text-sm text-slate-400">
+                    <input type="checkbox" name="remember" class="rounded border-slate-600 bg-slate-900 text-emerald-400 focus:ring-emerald-400">
                     <span>Remember me</span>
                 </label>
 
                 @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="text-sm font-semibold text-blue-600 hover:text-blue-700">
+                    <a href="{{ route('password.request') }}" class="ls-inline-link text-sm">
                         Forgot password?
                     </a>
                 @endif
@@ -49,9 +49,9 @@
             </x-ui.button>
         </form>
 
-        <p class="mt-6 text-center text-sm text-slate-500">
+        <p class="mt-6 text-center text-sm text-slate-400">
             New to Logi-Sport?
-            <a href="{{ route('register') }}" class="font-semibold text-blue-600 hover:text-blue-700">Create account</a>
+            <a href="{{ route('register') }}" class="ls-inline-link">Create account</a>
         </p>
     </x-ui.card>
 </x-guest-layout>

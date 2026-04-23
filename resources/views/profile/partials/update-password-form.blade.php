@@ -1,7 +1,7 @@
 <section>
     <header>
-        <h2 class="text-lg font-black text-slate-900">Update Password</h2>
-        <p class="mt-1 text-sm text-slate-500">Use a strong password to secure your account.</p>
+        <h2 class="text-lg font-black text-white">Update Password</h2>
+        <p class="mt-1 text-sm text-slate-400">Use a strong password to secure your account.</p>
     </header>
 
     <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-5">
@@ -36,7 +36,7 @@
             <x-ui.button type="submit">Update Password</x-ui.button>
 
             @if (session('status') === 'password-updated')
-                <span class="text-sm font-semibold text-emerald-600">Saved.</span>
+                <span class="text-sm font-semibold text-emerald-300">Saved.</span>
             @endif
         </div>
     </form>

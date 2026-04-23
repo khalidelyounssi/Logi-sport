@@ -15,67 +15,67 @@
             </x-ui.alert>
         @endif
 
-        <x-ui.card class="bg-gradient-to-r from-blue-700 to-cyan-600 text-white">
+        <div class="ls-flow-banner ls-flow-banner-overview">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Tournament Flow</p>
-                    <h2 class="mt-1 text-2xl font-black">{{ $tournament->title }}</h2>
-                    <p class="mt-1 text-sm text-blue-100">Follow: Participants -> Matches -> Standings.</p>
+                    <p class="ls-flow-label">Tournament Flow</p>
+                    <h2 class="ls-flow-title">{{ $tournament->title }}</h2>
+                    <p class="ls-flow-copy">Follow: Participants -> Matches -> Standings.</p>
                 </div>
 
-                <div class="flex flex-wrap gap-2">
-                    <x-ui.button as="a" :href="route('tournaments.edit', $tournament)" variant="secondary" size="sm">Edit</x-ui.button>
-                    <x-ui.button as="a" :href="route('tournaments.participants.index', $tournament)" variant="secondary" size="sm">Participants</x-ui.button>
-                    <x-ui.button as="a" :href="route('tournaments.matches.index', $tournament)" variant="secondary" size="sm">Matches</x-ui.button>
-                    <x-ui.button as="a" :href="route('tournaments.standings.index', $tournament)" variant="secondary" size="sm">Standings</x-ui.button>
+                <div class="ls-flow-actions">
+                    <a href="{{ route('tournaments.edit', $tournament) }}" class="ls-flow-pill">Edit</a>
+                    <a href="{{ route('tournaments.participants.index', $tournament) }}" class="ls-flow-pill">Participants</a>
+                    <a href="{{ route('tournaments.matches.index', $tournament) }}" class="ls-flow-pill">Matches</a>
+                    <a href="{{ route('tournaments.standings.index', $tournament) }}" class="ls-flow-pill">Standings</a>
                 </div>
             </div>
-        </x-ui.card>
+        </div>
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <x-ui.card class="lg:col-span-2">
-                <h3 class="text-lg font-black text-slate-900">Overview</h3>
+                <h3 class="text-lg font-black text-white">Overview</h3>
 
                 <dl class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                    <div class="ls-panel-soft px-4 py-3">
                         <dt class="text-xs uppercase tracking-[0.18em] text-slate-400">Title</dt>
-                        <dd class="mt-1 font-semibold text-slate-800">{{ $tournament->title }}</dd>
+                        <dd class="mt-1 font-semibold text-slate-200">{{ $tournament->title }}</dd>
                     </div>
 
-                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                    <div class="ls-panel-soft px-4 py-3">
                         <dt class="text-xs uppercase tracking-[0.18em] text-slate-400">Sport</dt>
-                        <dd class="mt-1 font-semibold text-slate-800">{{ $tournament->sport?->name ?? '-' }}</dd>
+                        <dd class="mt-1 font-semibold text-slate-200">{{ $tournament->sport?->name ?? '-' }}</dd>
                     </div>
 
-                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                    <div class="ls-panel-soft px-4 py-3">
                         <dt class="text-xs uppercase tracking-[0.18em] text-slate-400">Type</dt>
                         <dd class="mt-1"><x-ui.badge variant="info">{{ str_replace('_', ' ', $tournament->type) }}</x-ui.badge></dd>
                     </div>
 
-                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                    <div class="ls-panel-soft px-4 py-3">
                         <dt class="text-xs uppercase tracking-[0.18em] text-slate-400">Status</dt>
                         <dd class="mt-1"><x-ui.badge :status="$tournament->status">{{ str_replace('_', ' ', $tournament->status) }}</x-ui.badge></dd>
                     </div>
 
-                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                    <div class="ls-panel-soft px-4 py-3">
                         <dt class="text-xs uppercase tracking-[0.18em] text-slate-400">Start Date</dt>
-                        <dd class="mt-1 font-semibold text-slate-800">{{ $tournament->start_date?->format('Y-m-d') ?? '-' }}</dd>
+                        <dd class="mt-1 font-semibold text-slate-200">{{ $tournament->start_date?->format('Y-m-d') ?? '-' }}</dd>
                     </div>
 
-                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                    <div class="ls-panel-soft px-4 py-3">
                         <dt class="text-xs uppercase tracking-[0.18em] text-slate-400">End Date</dt>
-                        <dd class="mt-1 font-semibold text-slate-800">{{ $tournament->end_date?->format('Y-m-d') ?? 'Not set' }}</dd>
+                        <dd class="mt-1 font-semibold text-slate-200">{{ $tournament->end_date?->format('Y-m-d') ?? 'Not set' }}</dd>
                     </div>
                 </dl>
 
-                <div class="mt-5 rounded-2xl bg-slate-50 px-4 py-3">
+                <div class="mt-5 ls-panel-soft px-4 py-3">
                     <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Description</p>
-                    <p class="mt-1 text-sm text-slate-700">{{ $tournament->description ?: 'No description provided.' }}</p>
+                    <p class="mt-1 text-sm text-slate-300">{{ $tournament->description ?: 'No description provided.' }}</p>
                 </div>
             </x-ui.card>
 
             <x-ui.card>
-                <h3 class="text-lg font-black text-slate-900">Actions</h3>
+                <h3 class="text-lg font-black text-white">Actions</h3>
                 <div class="mt-4 space-y-2">
                     <x-ui.button as="a" :href="route('tournaments.participants.index', $tournament)" variant="secondary" class="w-full justify-start">
                         Manage Participants

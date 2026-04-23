@@ -9,10 +9,10 @@
             </x-ui.alert>
         @endif
 
-        <x-ui.card class="bg-gradient-to-r from-blue-700 to-cyan-600 text-white">
-            <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Tournament Flow</p>
+        <x-ui.card class="bg-[linear-gradient(90deg,#10213d_0%,#11325a_45%,#156b63_100%)] text-white">
+            <p class="text-xs uppercase tracking-[0.2em] text-emerald-100/80">Tournament Flow</p>
             <h2 class="mt-1 text-2xl font-black">Create -> Participants -> Matches -> Standings</h2>
-            <p class="mt-1 text-sm text-blue-100">Start by creating your tournament structure.</p>
+            <p class="mt-1 text-sm text-slate-200">Start by creating your tournament structure.</p>
         </x-ui.card>
 
         <x-ui.card>

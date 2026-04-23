@@ -1,7 +1,7 @@
 <section>
     <header>
-        <h2 class="text-lg font-black text-slate-900">Profile Information</h2>
-        <p class="mt-1 text-sm text-slate-500">Update your name and email address.</p>
+        <h2 class="text-lg font-black text-white">Profile Information</h2>
+        <p class="mt-1 text-sm text-slate-400">Update your name and email address.</p>
     </header>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
@@ -28,9 +28,9 @@
             @enderror
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div class="mt-3 rounded-2xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700">
+                <div class="mt-3 rounded-2xl border border-amber-400/30 bg-amber-500/10 p-3 text-sm text-amber-300">
                     <p>Your email address is unverified.</p>
-                    <button form="send-verification" class="mt-1 font-semibold underline">
+                    <button form="send-verification" class="mt-1 font-semibold underline decoration-emerald-400/60 underline-offset-4">
                         Click here to re-send verification email.
                     </button>
                 </div>
@@ -47,7 +47,7 @@
             <x-ui.button type="submit">Save Changes</x-ui.button>
 
             @if (session('status') === 'profile-updated')
-                <span class="text-sm font-semibold text-emerald-600">Saved.</span>
+                <span class="text-sm font-semibold text-emerald-300">Saved.</span>
             @endif
         </div>
     </form>

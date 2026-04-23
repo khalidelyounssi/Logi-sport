@@ -51,16 +51,16 @@
             </x-ui.card>
         @endif
 
-        <x-ui.card class="bg-gradient-to-r from-emerald-600 to-blue-700 text-white">
+        <div class="ls-flow-banner ls-flow-banner-step-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <p class="text-xs uppercase tracking-[0.2em] text-emerald-100">
+                    <p class="ls-flow-label">
                         {{ $canManage ? 'Tournament Flow' : 'Player View' }}
                     </p>
 
-                    <h2 class="mt-1 text-2xl font-black">{{ $tournament->title }}</h2>
+                    <h2 class="ls-flow-title">{{ $tournament->title }}</h2>
 
-                    <p class="mt-1 text-sm text-emerald-100">
+                    <p class="ls-flow-copy">
                         @if($canManage)
                             @if($isElimination)
                                 Elimination bracket summary based on finished matches.
@@ -77,31 +77,22 @@
                     </p>
                 </div>
 
-                <div class="flex flex-wrap gap-2">
+                <div class="ls-flow-actions">
                     @if($canManage)
-                        <x-ui.button as="a" :href="route('tournaments.participants.index', $tournament)" variant="secondary" size="sm">
-                            Participants
-                        </x-ui.button>
-
-                        <x-ui.button as="a" :href="route('tournaments.matches.index', $tournament)" variant="secondary" size="sm">
-                            Matches
-                        </x-ui.button>
+                        <a href="{{ route('tournaments.participants.index', $tournament) }}" class="ls-flow-pill">Participants</a>
+                        <a href="{{ route('tournaments.matches.index', $tournament) }}" class="ls-flow-pill">Matches</a>
                     @endif
 
                     @if($isPlayer && Route::has('player.tournaments'))
-                        <x-ui.button as="a" :href="route('player.tournaments')" variant="secondary" size="sm">
-                            My Tournaments
-                        </x-ui.button>
+                        <a href="{{ route('player.tournaments') }}" class="ls-flow-pill">My Tournaments</a>
                     @endif
 
                     @if($isPlayer && Route::has('player.matches'))
-                        <x-ui.button as="a" :href="route('player.matches')" variant="secondary" size="sm">
-                            My Matches
-                        </x-ui.button>
+                        <a href="{{ route('player.matches') }}" class="ls-flow-pill">My Matches</a>
                     @endif
                 </div>
             </div>
-        </x-ui.card>
+        </div>
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <x-ui.card>
@@ -129,17 +120,17 @@
                         $isCurrentUser = $leader->participant?->user_id === auth()->id();
                     @endphp
 
-                    <x-ui.card class="{{ $index === 0 ? 'border-yellow-300 bg-yellow-50' : '' }} {{ $isCurrentUser ? 'ring-2 ring-blue-300' : '' }}">
+                    <x-ui.card class="{{ $index === 0 ? 'border-amber-300/30 bg-amber-400/10' : '' }} {{ $isCurrentUser ? 'ring-2 ring-emerald-400/40' : '' }}">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-xs uppercase tracking-[0.2em] text-slate-400">
                                     {{ $isElimination ? 'Top Performer ' . ($index + 1) : 'Rank ' . ($index + 1) }}
                                 </p>
 
-                                <h4 class="mt-1 text-lg font-black text-slate-900">
+                                <h4 class="mt-1 text-lg font-black text-white">
                                     {{ $leader->participant?->name }}
                                     @if($isCurrentUser)
-                                        <span class="ml-2 text-sm font-semibold text-blue-600">(You)</span>
+                                        <span class="ml-2 text-sm font-semibold text-emerald-300">(You)</span>
                                     @endif
                                 </h4>
                             </div>
@@ -150,12 +141,12 @@
                         </div>
 
                         @if($isElimination)
-                            <p class="mt-3 text-sm text-slate-600">
-                                {{ $leader->won }} wins • {{ $leader->lost }} losses • {{ $leader->played }} played
+                            <p class="mt-3 text-sm text-slate-400">
+                                {{ $leader->won }} wins <span class="mx-2 ls-separator-dot align-middle"></span> {{ $leader->lost }} losses <span class="mx-2 ls-separator-dot align-middle"></span> {{ $leader->played }} played
                             </p>
                         @else
-                            <p class="mt-3 text-sm text-slate-600">
-                                {{ $leader->points }} pts • {{ $leader->won }}W / {{ $leader->draw }}D / {{ $leader->lost }}L
+                            <p class="mt-3 text-sm text-slate-400">
+                                {{ $leader->points }} pts <span class="mx-2 ls-separator-dot align-middle"></span> {{ $leader->won }}W / {{ $leader->draw }}D / {{ $leader->lost }}L
                             </p>
                         @endif
                     </x-ui.card>
@@ -192,7 +183,7 @@
 
         <x-ui.card padding="p-0">
             <x-ui.table>
-                <thead class="bg-slate-50 text-xs uppercase tracking-[0.18em] text-slate-400">
+                <thead class="bg-slate-950/70 text-xs uppercase tracking-[0.18em] text-slate-500">
                     <tr>
                         <th class="p-5">Rank</th>
                         <th class="p-5">Participant</th>
@@ -218,22 +209,22 @@
                             $isCurrentUser = $standing->participant?->user_id === auth()->id();
                         @endphp
 
-                        <tr class="border-t border-slate-100 {{ $index < 3 ? 'bg-blue-50/40' : '' }} {{ $isCurrentUser ? 'bg-emerald-50/60' : '' }}">
+                        <tr class="border-t border-slate-800/80 {{ $index < 3 ? 'bg-slate-900/40' : '' }} {{ $isCurrentUser ? 'bg-emerald-400/5' : '' }}">
                             <td class="p-5">
-                                <span class="inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold {{ $index === 0 ? 'bg-yellow-100 text-yellow-700' : 'bg-slate-100 text-slate-700' }}">
+                                <span class="inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold {{ $index === 0 ? 'bg-amber-400/15 text-amber-300' : 'bg-slate-800 text-slate-300' }}">
                                     {{ $index + 1 }}
                                 </span>
                             </td>
 
-                            <td class="p-5 font-semibold text-slate-900">
+                            <td class="p-5 font-semibold text-white">
                                 {{ $standing->participant?->name }}
                                 @if($isCurrentUser)
-                                    <span class="ml-2 text-xs font-bold uppercase tracking-[0.15em] text-emerald-600">You</span>
+                                    <span class="ml-2 text-xs font-bold uppercase tracking-[0.15em] text-emerald-300">You</span>
                                 @endif
                             </td>
 
                             @if($isRoundRobin)
-                                <td class="p-5 text-lg font-black text-blue-700">{{ $standing->points }}</td>
+                                <td class="p-5 text-lg font-black text-emerald-300">{{ $standing->points }}</td>
                             @endif
 
                             <td class="p-5">{{ $standing->played }}</td>
@@ -243,12 +234,12 @@
                                 <td class="p-5 font-semibold text-amber-600">{{ $standing->draw }}</td>
                             @endif
 
-                            <td class="p-5 font-semibold text-red-600">{{ $standing->lost }}</td>
+                            <td class="p-5 font-semibold text-rose-300">{{ $standing->lost }}</td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="{{ $isRoundRobin ? 7 : 5 }}" class="p-10 text-center">
-                                <p class="text-lg font-semibold text-slate-700">No standings yet</p>
+                                <p class="text-lg font-semibold text-slate-200">No standings yet</p>
                                 <p class="mt-1 text-sm text-slate-500">
                                     Standings appear after matches are generated and scores are saved.
                                 </p>

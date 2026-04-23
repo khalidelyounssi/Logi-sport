@@ -1,7 +1,7 @@
 <section class="space-y-4">
     <header>
-        <h2 class="text-lg font-black text-slate-900">Delete Account</h2>
-        <p class="mt-1 text-sm text-slate-500">
+        <h2 class="text-lg font-black text-white">Delete Account</h2>
+        <p class="mt-1 text-sm text-slate-400">
             This action is permanent. All associated data will be removed.
         </p>
     </header>
@@ -20,8 +20,8 @@
             @method('delete')
 
             <div>
-                <h3 class="text-lg font-black text-slate-900">Confirm Account Deletion</h3>
-                <p class="mt-1 text-sm text-slate-500">
+                <h3 class="text-lg font-black text-white">Confirm Account Deletion</h3>
+                <p class="mt-1 text-sm text-slate-400">
                     Enter your password to permanently delete your account.
                 </p>
             </div>

@@ -60,34 +60,38 @@
             </x-ui.card>
         @endif
 
-        <x-ui.card class="bg-gradient-to-r from-slate-900 to-blue-900 text-white">
+        <div class="ls-flow-banner ls-flow-banner-step-3">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <p class="text-xs uppercase tracking-[0.2em] text-slate-300">Tournament Flow</p>
-                    <h2 class="mt-1 text-2xl font-black">{{ $tournament->title }}</h2>
-                    <p class="mt-1 text-sm text-slate-300">Step 3/4: Schedule and track all matches.</p>
+                    <p class="ls-flow-label">Tournament Flow</p>
+                    <h2 class="ls-flow-title">{{ $tournament->title }}</h2>
+                    <p class="ls-flow-copy">Step 3/4: Schedule and track all matches.</p>
                 </div>
 
-                <div class="flex flex-wrap gap-2">
-                    <x-ui.button as="a" :href="route('tournaments.participants.index', $tournament)" variant="secondary" size="sm">Participants</x-ui.button>
-                    <x-ui.button as="a" :href="route('tournaments.standings.index', $tournament)" variant="secondary" size="sm">Standings</x-ui.button>
+                <div class="ls-flow-actions">
+                    <a href="{{ route('tournaments.participants.index', $tournament) }}" class="ls-flow-pill">Participants</a>
+                    <a href="{{ route('tournaments.standings.index', $tournament) }}" class="ls-flow-pill">Standings</a>
                 </div>
             </div>
-        </x-ui.card>
+        </div>
 
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
                 <span>Total matches: {{ $matches->count() }}</span>
-                <span>•</span>
+                <span class="ls-separator-dot"></span>
                 <span>Finished: {{ $matches->where('status', 'finished')->count() }}</span>
-                <span>•</span>
+                <span class="ls-separator-dot"></span>
                 <span>Scheduled: {{ $matches->where('status', 'scheduled')->count() }}</span>
             </div>
 
             <div class="flex flex-wrap gap-2">
                 @if(auth()->user()->role === 'organizer')
                     <x-ui.button as="a" :href="route('tournaments.matches.create', $tournament)" variant="primary">
-                        <span>➕</span>
+                        <span class="ls-icon-badge" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                                <path d="M12 5v14M5 12h14"/>
+                            </svg>
+                        </span>
                         <span>Create Match</span>
                     </x-ui.button>
 
@@ -95,7 +99,12 @@
                         <form action="{{ route('tournaments.generateMatches', $tournament) }}" method="POST" onsubmit="return confirm('Regenerate matches? Existing matches will be replaced.')">
                             @csrf
                             <x-ui.button type="submit" variant="success">
-                                <span>⚙️</span>
+                                <span class="ls-icon-badge" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 3l1.4 2.85 3.14.46-2.27 2.21.54 3.13L12 10.9l-2.81 1.48.54-3.13L7.46 6.3l3.14-.46L12 3z"/>
+                                        <circle cx="12" cy="12" r="3.2"/>
+                                    </svg>
+                                </span>
                                 <span>Generate Round Robin</span>
                             </x-ui.button>
                         </form>
@@ -129,15 +138,26 @@
                             <p class="font-semibold text-slate-100 truncate">{{ $match->participantA?->name ?? 'Team A' }}</p>
                         </div>
 
-                        <div class="text-center shrink-0">
+                        <div class="shrink-0">
                             @if($hasScore)
-                                <p class="text-2xl font-black text-emerald-300">{{ $match->score_a }} - {{ $match->score_b }}</p>
+                                <div class="ls-score-chip">
+                                    <p class="ls-score-chip-label">Score</p>
+                                    <p class="ls-score-chip-value">{{ $match->score_a }}:{{ $match->score_b }}</p>
+                                    <p class="ls-score-chip-meta">{{ $match->match_date?->format('d M • H:i') ?? 'Date TBD' }}</p>
+                                </div>
                             @elseif($match->status === 'finished')
-                                <p class="text-sm font-bold text-amber-300">No score</p>
+                                <div class="ls-score-chip">
+                                    <p class="ls-score-chip-label">Score</p>
+                                    <p class="ls-score-chip-value">--:--</p>
+                                    <p class="ls-score-chip-meta">No score</p>
+                                </div>
                             @else
-                                <p class="text-xl font-black text-slate-300">VS</p>
+                                <div class="ls-score-chip">
+                                    <p class="ls-score-chip-label">Score</p>
+                                    <p class="ls-score-chip-value">--:--</p>
+                                    <p class="ls-score-chip-meta">{{ $match->match_date?->format('d M • H:i') ?? 'Date TBD' }}</p>
+                                </div>
                             @endif
-                            <p class="text-xs text-slate-500 mt-1">{{ $match->match_date?->format('d M • H:i') ?? 'Date TBD' }}</p>
                         </div>
 
                         <div class="flex items-center gap-3 min-w-0 flex-row-reverse">

@@ -61,114 +61,134 @@
                 ['label' => 'Notifications', 'href' => route('notifications.index'), 'active' => request()->routeIs('notifications.*'), 'badge' => $unreadNotificationsCount],
                 ['label' => 'Users', 'href' => route('admin.users'), 'active' => request()->routeIs('admin.users')],
                 ['label' => 'Sports', 'href' => route('sports.index'), 'active' => request()->routeIs('sports.*')],
-                ['label' => 'Tournaments', 'href' => route('tournaments.index'), 'active' => request()->routeIs('tournaments.*')],
             ];
         }
     @endphp
 
-    <div x-data="{ mobileMenuOpen: false }" class="min-h-screen bg-slate-950 text-slate-100">
+    <div x-data="{ mobileMenuOpen: false }" class="ls-shell text-slate-100">
         @auth
-            <header class="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
-                <div class="flex w-full items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-                    <a href="{{ url('/') }}" class="flex items-center gap-3">
-                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-700 bg-slate-900 text-sm font-black text-emerald-400">LS</span>
-                        <span>
-                            <span class="block text-sm uppercase tracking-[0.22em] text-slate-400">SaaS Platform</span>
-                            <span class="block text-lg font-black text-emerald-400">Logi-Sport</span>
-                        </span>
-                    </a>
-
-                    <nav class="hidden items-center gap-2 lg:flex">
-                        @foreach($navItems as $item)
-                            <a
-                                href="{{ $item['href'] }}"
-                                class="rounded-2xl px-4 py-2 text-sm font-semibold transition {{ !empty($item['disabled']) ? 'pointer-events-none cursor-not-allowed text-slate-500 opacity-50' : ($item['active'] ? 'bg-emerald-500 text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-white') }}"
-                            >
-                                {{ $item['label'] }}
-                                @if(!empty($item['badge']) && $item['badge'] > 0)
-                                    <span class="ml-2 rounded-full bg-slate-950/20 px-2 py-0.5 text-[11px] font-black">{{ $item['badge'] }}</span>
-                                @endif
-                            </a>
-                        @endforeach
-                    </nav>
-
-                    <div class="flex items-center gap-3">
-                        <div class="hidden items-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/80 px-4 py-2 shadow-sm sm:flex">
-                            <div class="min-w-0 text-right">
-                                <p class="truncate text-sm font-semibold text-slate-100">{{ $user->name }}</p>
-                                <p class="text-[11px] uppercase tracking-[0.2em] text-slate-400">{{ $role }}</p>
-                            </div>
-                            <div class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-950 text-sm font-bold text-emerald-300">
-                                {{ strtoupper(substr($user->name, 0, 1)) }}
-                            </div>
-                        </div>
-
-                        <button
-                            type="button"
-                            class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-slate-200 lg:hidden"
-                            @click="mobileMenuOpen = ! mobileMenuOpen"
-                            aria-label="Open navigation menu"
-                        >
-                            <span class="flex flex-col gap-1">
-                                <span class="block h-0.5 w-5 rounded-full bg-current"></span>
-                                <span class="block h-0.5 w-5 rounded-full bg-current"></span>
-                                <span class="block h-0.5 w-5 rounded-full bg-current"></span>
-                            </span>
-                        </button>
-
-                        <form method="POST" action="{{ route('logout') }}" class="hidden sm:block">
-                            @csrf
+            <div class="relative z-10 flex min-h-screen flex-col">
+                <header class="ls-topbar sticky top-0 z-50">
+                    <div class="mx-auto flex w-full max-w-[1500px] items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+                        <div class="flex items-center gap-3">
                             <button
-                                type="submit"
-                                class="inline-flex items-center rounded-2xl border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-800"
+                                type="button"
+                                class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-700/80 bg-slate-950/70 text-slate-200 lg:hidden"
+                                @click="mobileMenuOpen = ! mobileMenuOpen"
+                                aria-label="Open navigation menu"
                             >
-                                Logout
+                                <span class="flex flex-col gap-1">
+                                    <span class="block h-0.5 w-5 rounded-full bg-current"></span>
+                                    <span class="block h-0.5 w-5 rounded-full bg-current"></span>
+                                    <span class="block h-0.5 w-5 rounded-full bg-current"></span>
+                                </span>
                             </button>
-                        </form>
-                    </div>
-                </div>
 
-                <div x-cloak x-show="mobileMenuOpen" x-transition class="border-t border-slate-800 bg-slate-950 lg:hidden">
-                    <div class="flex w-full flex-col gap-2 px-4 py-4 sm:px-6">
-                        @foreach($navItems as $item)
-                            <a
-                                href="{{ $item['href'] }}"
-                                class="rounded-2xl px-4 py-3 text-sm font-semibold transition {{ !empty($item['disabled']) ? 'pointer-events-none cursor-not-allowed text-slate-500 opacity-50' : ($item['active'] ? 'bg-emerald-500 text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-white') }}"
-                                @click="mobileMenuOpen = false"
-                            >
-                                <span class="flex items-center justify-between gap-3">
-                                    <span>{{ $item['label'] }}</span>
-                                    @if(!empty($item['badge']) && $item['badge'] > 0)
-                                        <span class="rounded-full bg-slate-950/20 px-2 py-0.5 text-[11px] font-black">{{ $item['badge'] }}</span>
-                                    @endif
+                            <a href="{{ url('/') }}" class="flex items-center gap-3">
+                                <span class="inline-flex h-11 w-11 items-center justify-center rounded-[18px] border border-emerald-400/25 bg-emerald-400/10 text-sm font-black text-emerald-300">LS</span>
+                                <span>
+                                    <span class="block text-[11px] uppercase tracking-[0.28em] text-slate-500">Logi-Sport</span>
+                                    <span class="block text-lg font-black text-white">Command Center</span>
                                 </span>
                             </a>
-                        @endforeach
+                        </div>
 
-                        <form method="POST" action="{{ route('logout') }}" class="pt-2">
-                            @csrf
-                            <button
-                                type="submit"
-                                class="inline-flex w-full items-center justify-center rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-slate-800"
-                            >
-                                Logout
-                            </button>
-                        </form>
+                        <nav class="hidden items-center gap-2 lg:flex">
+                            @foreach($navItems as $item)
+                                <a
+                                    href="{{ $item['href'] }}"
+                                    class="ls-nav-link {{ !empty($item['disabled']) ? 'pointer-events-none cursor-not-allowed opacity-40' : ($item['active'] ? 'ls-nav-link-active' : 'ls-nav-link-inactive') }}"
+                                >
+                                    <span>{{ $item['label'] }}</span>
+                                    @if(!empty($item['badge']) && $item['badge'] > 0)
+                                        <span class="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-black text-emerald-300">{{ $item['badge'] }}</span>
+                                    @endif
+                                </a>
+                            @endforeach
+                        </nav>
+
+                        <div class="hidden items-center gap-3 sm:flex">
+                            <div class="ls-panel-soft flex items-center gap-3 px-4 py-2.5">
+                                <div class="min-w-0 text-right">
+                                    <p class="truncate text-sm font-semibold text-white">{{ $user->name }}</p>
+                                    <p class="text-[11px] uppercase tracking-[0.18em] text-slate-500">{{ $role }}</p>
+                                </div>
+                                <div class="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-700 bg-slate-950/80 text-sm font-bold text-emerald-300">
+                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                </div>
+                            </div>
+
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button
+                                    type="submit"
+                                    class="inline-flex items-center justify-center rounded-2xl border border-slate-700/80 bg-slate-950/80 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:border-emerald-400/30 hover:bg-slate-900"
+                                >
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            </header>
+
+                    <div x-cloak x-show="mobileMenuOpen" x-transition class="border-t border-slate-800/70 bg-slate-950/95 lg:hidden">
+                        <div class="mx-auto flex w-full max-w-[1500px] flex-col gap-2 px-4 py-4 sm:px-6">
+                            @foreach($navItems as $item)
+                                <a
+                                    href="{{ $item['href'] }}"
+                                    class="ls-nav-link {{ !empty($item['disabled']) ? 'pointer-events-none cursor-not-allowed opacity-40' : ($item['active'] ? 'ls-nav-link-active' : 'ls-nav-link-inactive') }}"
+                                    @click="mobileMenuOpen = false"
+                                >
+                                    <span>{{ $item['label'] }}</span>
+                                    @if(!empty($item['badge']) && $item['badge'] > 0)
+                                        <span class="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-black text-emerald-300">{{ $item['badge'] }}</span>
+                                    @endif
+                                </a>
+                            @endforeach
+
+                            <form method="POST" action="{{ route('logout') }}" class="pt-2 sm:hidden">
+                                @csrf
+                                <button
+                                    type="submit"
+                                    class="inline-flex w-full items-center justify-center rounded-2xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-slate-900"
+                                >
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </header>
+
+                <main class="relative z-10 w-full flex-1 p-4 sm:p-6 lg:p-8">
+                    <div class="mx-auto w-full max-w-[1500px]">
+                        @auth
+                            <div class="mb-6 ls-hero">
+                                <div class="ls-hero-banner">
+                                    <span class="ls-kicker">Active Workspace</span>
+                                    <h1 class="mt-5 max-w-2xl text-3xl font-black leading-tight text-white lg:text-5xl">{{ $title ?? 'Dashboard' }}</h1>
+                                    <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-300 lg:text-base">{{ $subtitle ?? 'Welcome back to Logi-Sport.' }}</p>
+                                </div>
+
+                                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                                    <div class="ls-stat-card">
+                                        <p class="ls-stat-label">Navigation Modules</p>
+                                        <p class="ls-stat-value">{{ count($navItems) }}</p>
+                                        <p class="ls-stat-trend">Ready for action</p>
+                                    </div>
+
+                                    <div class="ls-stat-card">
+                                        <p class="ls-stat-label">Unread Alerts</p>
+                                        <p class="ls-stat-value">{{ $unreadNotificationsCount }}</p>
+                                        <p class="mt-3 text-sm text-slate-400">Everything important stays visible from your control center.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endauth
+
+                        {{ $slot }}
+                    </div>
+                </main>
+            </div>
         @endauth
-
-        <main class="w-full flex-1 p-4 sm:p-6 lg:p-8">
-            @auth
-                <div class="mb-5 lg:mb-6">
-                    <h1 class="text-2xl font-black text-slate-100">{{ $title ?? 'Dashboard' }}</h1>
-                    <p class="mt-1 text-sm text-slate-400">{{ $subtitle ?? 'Welcome back to Logi-Sport.' }}</p>
-                </div>
-            @endauth
-
-            {{ $slot }}
-        </main>
     </div>
 </body>
 </html>

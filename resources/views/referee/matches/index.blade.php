@@ -23,6 +23,20 @@
             </x-ui.alert>
         @endif
 
+        <div class="ls-flow-banner ls-flow-banner-step-3">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <p class="ls-flow-label">Referee Command</p>
+                    <h2 class="ls-flow-title">Assigned Matches</h2>
+                    <p class="ls-flow-copy">Review fixtures and submit official score updates.</p>
+                </div>
+
+                <div class="ls-flow-actions">
+                    <a href="{{ route('referee.dashboard') }}" class="ls-flow-pill">Dashboard</a>
+                </div>
+            </div>
+        </div>
+
         <div class="flex flex-wrap items-center justify-between gap-3">
             <p class="text-sm text-slate-500">Assigned matches: {{ $matches->count() }}</p>
             <x-ui.badge variant="info">Referee Panel</x-ui.badge>
@@ -49,15 +63,26 @@
                             <p class="font-semibold text-slate-100 truncate">{{ $match->participantA?->name ?? 'Team A' }}</p>
                         </div>
 
-                        <div class="text-center shrink-0">
+                        <div class="shrink-0">
                             @if($hasScore)
-                                <p class="text-2xl font-black text-emerald-300">{{ $match->score_a }} - {{ $match->score_b }}</p>
+                                <div class="ls-score-chip">
+                                    <p class="ls-score-chip-label">Score</p>
+                                    <p class="ls-score-chip-value">{{ $match->score_a }}:{{ $match->score_b }}</p>
+                                    <p class="ls-score-chip-meta">{{ $match->match_date?->format('d M • H:i') ?? 'Date TBD' }}</p>
+                                </div>
                             @elseif($match->status === 'finished')
-                                <p class="text-sm font-bold text-amber-300">No score</p>
+                                <div class="ls-score-chip">
+                                    <p class="ls-score-chip-label">Score</p>
+                                    <p class="ls-score-chip-value">--:--</p>
+                                    <p class="ls-score-chip-meta">No score</p>
+                                </div>
                             @else
-                                <p class="text-xl font-black text-slate-300">VS</p>
+                                <div class="ls-score-chip">
+                                    <p class="ls-score-chip-label">Score</p>
+                                    <p class="ls-score-chip-value">--:--</p>
+                                    <p class="ls-score-chip-meta">{{ $match->match_date?->format('d M • H:i') ?? 'Date TBD' }}</p>
+                                </div>
                             @endif
-                            <p class="text-xs text-slate-500 mt-1">{{ $match->match_date?->format('d M • H:i') ?? 'Date TBD' }}</p>
                         </div>
 
                         <div class="flex items-center gap-3 min-w-0 flex-row-reverse">

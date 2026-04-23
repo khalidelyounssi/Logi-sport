@@ -1,9 +1,9 @@
 <x-guest-layout>
     <x-ui.card padding="p-8 sm:p-10">
         <div class="mb-8 text-center">
-            <p class="text-xs uppercase tracking-[0.25em] text-slate-400">Logi-Sport</p>
-            <h1 class="mt-2 text-3xl font-black text-slate-900">Create Account</h1>
-            <p class="mt-2 text-sm text-slate-500">Join the platform as organizer, player, or referee.</p>
+            <p class="ls-kicker">Create Profile</p>
+            <h1 class="mt-4 text-3xl font-black text-white">Create Account</h1>
+            <p class="mt-3 text-sm leading-7 text-slate-400">Join the platform as organizer, player, or referee and unlock the full competition workspace.</p>
         </div>
 
         @if($errors->any())
@@ -49,9 +49,9 @@
             </x-ui.button>
         </form>
 
-        <p class="mt-6 text-center text-sm text-slate-500">
+        <p class="mt-6 text-center text-sm text-slate-400">
             Already have an account?
-            <a href="{{ route('login') }}" class="font-semibold text-blue-600 hover:text-blue-700">Sign in</a>
+            <a href="{{ route('login') }}" class="ls-inline-link">Sign in</a>
         </p>
     </x-ui.card>
 </x-guest-layout>
