@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Logi-Sport') }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -85,7 +86,9 @@
                             </button>
 
                             <a href="{{ url('/') }}" class="flex items-center gap-3">
-                                <span class="inline-flex h-11 w-11 items-center justify-center rounded-[18px] border border-emerald-400/25 bg-emerald-400/10 text-sm font-black text-emerald-300">LS</span>
+                                <span class="inline-flex h-11 w-11 items-center justify-center rounded-[18px] border border-emerald-400/25 bg-emerald-400/10 text-emerald-300">
+                                    <x-logo-mark class="h-7 w-7" />
+                                </span>
                                 <span>
                                     <span class="block text-[11px] uppercase tracking-[0.28em] text-slate-500">Logi-Sport</span>
                                     <span class="block text-lg font-black text-white">Command Center</span>

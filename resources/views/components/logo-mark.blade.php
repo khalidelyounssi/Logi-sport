@@ -1,0 +1,9 @@
+<svg {{ $attributes->merge(['viewBox' => '0 0 128 128', 'fill' => 'none', 'xmlns' => 'http://www.w3.org/2000/svg']) }}>
+    <g fill="currentColor">
+        <rect x="7" y="46" width="48" height="12" rx="6" transform="rotate(2 7 46)"/>
+        <rect x="29" y="13" width="62" height="12" rx="6" transform="rotate(40 29 13)"/>
+        <circle cx="97" cy="36" r="11"/>
+        <path d="M67 47c8 0 16 3 21 10l8 11c3 4 2 10-3 13-5 3-11 2-14-3l-5-8-18 13c6 4 11 9 13 16 2 6 0 12-4 17l-22 21c-4 4-10 4-14 0-4-4-3-10 1-14l19-18-23-17c-5-4-6-11-2-16l20-24c6-7 14-11 23-11Z"/>
+        <path d="M74 86l14-12 33 13c6 2 9 8 7 13-2 6-8 9-14 7L78 94c-3-1-5-4-6-8 0-1 1-1 2 0Z"/>
+    </g>
+</svg>

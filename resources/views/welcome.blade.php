@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logi-Sport | Organisez vos tournois facilement</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="theme-logi antialiased">
@@ -28,7 +29,9 @@
         <header class="ls-topbar sticky top-0 z-50">
             <div class="mx-auto flex w-full max-w-[1480px] items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
                 <a href="/" class="flex items-center gap-3">
-                    <span class="inline-flex h-11 w-11 items-center justify-center rounded-[18px] border border-emerald-400/30 bg-emerald-400/10 font-black text-emerald-300">LS</span>
+                    <span class="inline-flex h-11 w-11 items-center justify-center rounded-[18px] border border-emerald-400/30 bg-emerald-400/10 text-emerald-300">
+                        <x-logo-mark class="h-7 w-7" />
+                    </span>
                     <div>
                         <p class="text-[11px] uppercase tracking-[0.28em] text-slate-500">Logi-Sport</p>
                         <p class="text-lg font-black text-white">Tournament OS</p>
